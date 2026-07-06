@@ -1,0 +1,16 @@
+# build output
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# working images not meant for the repo
+docs/test-pic/
+
+# local HTTPS dev cert (never commit the private key)
+.cert/
+
+# os / misc
+.DS_Store
+*.log

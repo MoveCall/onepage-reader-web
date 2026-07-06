@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- One-Page Reader 右侧(边缘) 线稿 — 由 线稿图-右侧.dxf 精确转换 (1:1, 单位 mm, 无上色) -->
+<!-- 已按 LWPOLYLINE bulge 还原圆弧: 挂绳孔=竖capsule, microSD=横capsule, 按键=三重嵌套capsule -->
+<svg xmlns="http://www.w3.org/2000/svg" width="124mm" height="11mm"
+     viewBox="0 0 124 11">
+  <defs>
+    <!-- 中->外 0.1mm 间隙: 凹陷发黑 -->
+    <linearGradient id="btnGap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#2b2b2b"/>
+      <stop offset="1"   stop-color="#4a4a4a"/>
+    </linearGradient>
+    <!-- 内->中 0.3mm 45°倒角: 上受光亮、下背光暗 -->
+    <linearGradient id="btnCham" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#fafafa"/>
+      <stop offset="0.5" stop-color="#d0d0d0"/>
+      <stop offset="1"   stop-color="#9c9c9c"/>
+    </linearGradient>
+    <!-- 内 r0.6 键顶平面: 微弱竖向渐变 -->
+    <linearGradient id="btnTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#ececec"/>
+      <stop offset="0.5" stop-color="#e0e0e0"/>
+      <stop offset="1"   stop-color="#cfcfcf"/>
+    </linearGradient>
+    <!-- 孔/腔 深色: 径向 -->
+    <radialGradient id="holeFill" cx="0.42" cy="0.34" r="0.85">
+      <stop offset="0"   stop-color="#080808"/>
+      <stop offset="0.6" stop-color="#191919"/>
+      <stop offset="1"   stop-color="#333333"/>
+    </radialGradient>
+    <!-- microSD 深腔: 竖向纯黑 -->
+    <linearGradient id="slotFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#040404"/>
+      <stop offset="0.5" stop-color="#111111"/>
+      <stop offset="1"   stop-color="#060606"/>
+    </linearGradient>
+    <!-- 孔缘倒角折射: 上亮下暗 -->
+    <linearGradient id="holeRim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="1"   stop-color="#2a2a2a" stop-opacity="0.5"/>
+    </linearGradient>
+    <!-- 机身铝合金: 上亮->中灰->下暗 -->
+    <linearGradient id="aluBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#f2f2f2"/>
+      <stop offset="0.15" stop-color="#e1e1e1"/>
+      <stop offset="0.5"  stop-color="#d5d5d5"/>
+      <stop offset="0.85" stop-color="#cccccc"/>
+      <stop offset="1"    stop-color="#b8b8b8"/>
+    </linearGradient>
+    <!-- 上0.5mm 45°倒角: CNC 切削镜面亮边 -->
+    <linearGradient id="chamTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dcdcdc"/>
+    </linearGradient>
+    <!-- 下0.5mm 45°倒角: 阴影 + 底缘微反光 -->
+    <linearGradient id="chamBot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#bcbcbc"/>
+      <stop offset="0.6" stop-color="#a4a4a4"/>
+      <stop offset="1"   stop-color="#cacaca"/>
+    </linearGradient>
+    <!-- 喷砂颗粒(中性灰) -->
+    <filter id="grain" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7 1.4" numOctaves="2" seed="11" result="n"/>
+      <feColorMatrix in="n" type="matrix"
+        values="0 0 0 0 0.55  0 0 0 0 0.55  0 0 0 0 0.57  0 0 0 0.5 0"/>
+    </filter>
+    <clipPath id="bodyClip">
+      <polygon points="
+        -64.03,0.5 -63.53,0 -59.03,0 46.97,0 51.47,0 51.97,0.5
+        51.97,4.5 51.47,5 46.97,5 -59.03,5 -63.53,5 -64.03,4.5"/>
+    </clipPath>
+    <!-- 两端水平暗部衰减(金属向后弯曲) -->
+    <linearGradient id="endDarkL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#000000" stop-opacity="0.34"/>
+      <stop offset="0.5" stop-color="#000000" stop-opacity="0.08"/>
+      <stop offset="1"   stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="endDarkR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#000000" stop-opacity="0.08"/>
+      <stop offset="1"   stop-color="#000000" stop-opacity="0.34"/>
+    </linearGradient>
+    <!-- 高光亮线沿X向两端淡出 -->
+    <linearGradient id="hlFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.06" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="0.94" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="1"    stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="hlFadeBot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#efefef" stop-opacity="0"/>
+      <stop offset="0.08" stop-color="#efefef" stop-opacity="0.5"/>
+      <stop offset="0.92" stop-color="#efefef" stop-opacity="0.5"/>
+      <stop offset="1"    stop-color="#efefef" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="projCham" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6f6f6"/><stop offset="0.5" stop-color="#cbcbcb"/><stop offset="1" stop-color="#8a8a8a"/>
+    </linearGradient>
+    <linearGradient id="projTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0f0f0"/><stop offset="1" stop-color="#dadada"/>
+    </linearGradient>
+  </defs>
+  <!-- 坐标系: dxf(x,y) -> svg(x+66, y+3); 机身 dxf x[-64.03..51.97] y[0..5] -->
+  <g transform="translate(66,3)" fill="none" stroke="#000000" stroke-width="0.025"
+     stroke-linejoin="round" stroke-linecap="round">
+
+    <!-- 机身铝合金主体(连续无缝, 含四角0.5mm 45°倒角) -->
+    <polygon fill="url(#aluBody)" stroke="#9a9a9a" stroke-width="0.04" points="
+      -64.03,0.5 -63.53,0 -59.03,0 46.97,0 51.47,0 51.97,0.5
+      51.97,4.5 51.47,5 46.97,5 -59.03,5 -63.53,5 -64.03,4.5"/>
+
+    <!-- 喷砂颗粒(裁剪在机身内) -->
+    <g clip-path="url(#bodyClip)">
+      <rect stroke="none" x="-64.03" y="0" width="116" height="5" filter="url(#grain)" opacity="0.18"/>
+    </g>
+
+    <!-- 上0.5mm 45°倒角亮带 -->
+    <polygon stroke="none" fill="url(#chamTop)" points="-64.03,0.5 -63.53,0 51.47,0 51.97,0.5"/>
+    <!-- 下0.5mm 45°倒角暗带 -->
+    <polygon stroke="none" fill="url(#chamBot)" points="-64.03,4.5 51.97,4.5 51.47,5 -63.53,5"/>
+
+    <!-- 两端水平暗部衰减(圆角向后弯,光线衰减) -->
+    <g clip-path="url(#bodyClip)">
+      <rect stroke="none" fill="url(#endDarkL)" x="-64.03" y="0" width="6" height="5"/>
+      <rect stroke="none" fill="url(#endDarkR)" x="45.97" y="0" width="6" height="5"/>
+    </g>
+
+    <!-- 上缘高光: 沿顶边, 两端顺圆角向下弯并淡出 -->
+    <path fill="none" stroke="url(#hlFade)" stroke-width="0.07"
+          d="M -64.0,0.5 Q -63.5,0.03 -62.6,0.03 L 50.6,0.03 Q 51.5,0.03 52.0,0.5"/>
+    <!-- 下缘微反光: 同样两端淡出 -->
+    <path fill="none" stroke="url(#hlFadeBot)" stroke-width="0.06"
+          d="M -64.0,4.5 Q -63.5,4.97 -62.6,4.97 L 50.6,4.97 Q 51.5,4.97 52.0,4.5"/>
+
+    <!-- 两端最边缘: 极细竖向弧形受光(圆角面反光) -->
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="0.05"
+          d="M -63.9,0.75 Q -64.08,2.5 -63.9,4.25"/>
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="0.05"
+          d="M 51.85,0.75 Q 52.03,2.5 51.85,4.25"/>
+
+    <!-- 挂绳孔 (竖向 capsule: 宽1.516 x 高2.016) -->
+    <rect stroke="none" fill="url(#holeFill)" x="-58.038" y="1.492" width="1.516" height="2.016" rx="0.758" ry="0.758"/>
+    <rect fill="none" stroke="url(#holeRim)" stroke-width="0.1" x="-58.038" y="1.492" width="1.516" height="2.016" rx="0.758" ry="0.758"/>
+
+    <!-- microSD 卡槽 (横向 capsule) : 深腔 + 上缘亮唇 + 下缘反光 -->
+    <path stroke="none" fill="url(#slotFill)" d="M -51.217,1.82 L -40.627,1.82 A 0.65 0.65 0 0 1 -40.627,3.12 L -51.217,3.12 A 0.65 0.65 0 0 1 -51.217,1.82 Z"/>
+    <path fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="0.16" d="M -50.9,1.9 L -40.95,1.9"/>
+    <path fill="none" stroke="#d6d6d6" stroke-opacity="0.6" stroke-width="0.07" d="M -50.9,1.86 L -40.95,1.86"/>
+    <path fill="none" stroke="#7c7c7c" stroke-opacity="0.5" stroke-width="0.06" d="M -50.9,3.08 L -40.95,3.08"/>
+
+    <!-- Reset 复位孔 (圆 r0.65) : 深孔 + 倒角折射 + 右壁月牙高光 -->
+    <circle stroke="none" fill="url(#holeFill)" cx="-35" cy="2.5" r="0.65"/>
+    <circle fill="none" stroke="url(#holeRim)" stroke-width="0.1" cx="-35" cy="2.5" r="0.65"/>
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.08" d="M -34.72,2.24 A 0.33 0.33 0 0 1 -34.72,2.76"/>
+
+    <!-- ==== 上/下翻页键 (中心 x0) : 内=键面 / 内到中=0.3mm倒角 / 中到外=0.1mm间隙 ==== -->
+    <!-- 外 r1.0 = 间隙(发黑) -->
+    <path stroke="none" fill="url(#btnGap)" d="M -8,1.5 L 8,1.5 A 1 1 0 0 1 8,3.5 L -8,3.5 A 1 1 0 0 1 -8,1.5 Z"/>
+    <!-- 中 r0.9 = 倒角外缘(0.3mm倒角带) -->
+    <path stroke="none" fill="url(#btnCham)" d="M -8,1.6 L 8,1.6 A 0.9 0.9 0 0 1 8,3.4 L -8,3.4 A 0.9 0.9 0 0 1 -8,1.6 Z"/>
+    <!-- 内 r0.6 = 键顶平面 -->
+    <path stroke="none" fill="url(#btnTop)" d="M -8,1.9 L 8,1.9 A 0.6 0.6 0 0 1 8,3.1 L -8,3.1 A 0.6 0.6 0 0 1 -8,1.9 Z"/>
+    <!-- 键面顶部高光 -->
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="0.08" d="M -7.4,2.05 L 7.4,2.05"/>
+
+    <!-- ==== 唤醒键 (x23.485..31.485) : 同结构 ==== -->
+    <!-- 外 r1.0 = 间隙(发黑) -->
+    <path stroke="none" fill="url(#btnGap)" d="M 23.485,1.5 L 31.485,1.5 A 1 1 0 0 1 31.485,3.5 L 23.485,3.5 A 1 1 0 0 1 23.485,1.5 Z"/>
+    <!-- 中 r0.9 = 倒角外缘 -->
+    <path stroke="none" fill="url(#btnCham)" d="M 23.485,1.6 L 31.485,1.6 A 0.9 0.9 0 0 1 31.485,3.4 L 23.485,3.4 A 0.9 0.9 0 0 1 23.485,1.6 Z"/>
+    <!-- 内 r0.6 = 键顶平面 -->
+    <path stroke="none" fill="url(#btnTop)" d="M 23.485,1.9 L 31.485,1.9 A 0.6 0.6 0 0 1 31.485,3.1 L 23.485,3.1 A 0.6 0.6 0 0 1 23.485,1.9 Z"/>
+    <!-- 键面顶部高光 -->
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.28" stroke-width="0.08" d="M 24.1,2.05 L 30.9,2.05"/>
+    <!-- 键面顶部高光 -->
+    <path fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="0.14" d="M 24.1,2.06 L 30.9,2.06"/>
+
+    <!-- ==== 正面按键 投影(顶部) : 兜一圈45°倒角 (无高光) ==== -->
+    <g stroke-linejoin="round" stroke-linecap="round">
+      <polygon fill="url(#projCham)" stroke="#8f8f8f" stroke-width="0.04" points="-60.58,0.0 -60.58,-0.2 -60.280,-0.5 -58.180,-0.5 -57.88,-0.2 -57.88,0.0"/>
+      <rect stroke="none" fill="url(#projTop)" x="-60.03" y="-0.42" width="1.6" height="0.27" rx="0.05" ry="0.05"/>
+      <line stroke="#000000" stroke-opacity="0.25" stroke-width="0.05" x1="-60.58" y1="0" x2="-57.88" y2="0"/>
+    </g>
+  </g>
+</svg>

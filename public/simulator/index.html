@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Cross-origin isolation (SharedArrayBuffer) for the threaded WASM. credentialless
+         so the parent site's cross-origin font CSS keeps loading. No-op if the host sets headers. -->
+    <script>window.coi = { coepCredentialless: () => true };</script>
+    <script src="../coi-serviceworker.js"></script>
+    <!-- Embedded in the site (iframe) → fill the true-size container, drop page chrome. -->
+    <script>if (window.self !== window.top) document.documentElement.className = "embedded";</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>OnePage — Live Simulator (CrossPoint firmware)</title>
+    <style>
+      :root { color-scheme: light; --paper: #f4f3ef; --ink: #1a1916; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: transparent; overflow: hidden;
+        font-family: ui-monospace, "SFMono-Regular", monospace; color: var(--ink); }
+      #stage { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 8px; }
+
+      /* Real device art (onepage-top.svg, viewBox 83×132) as the shell. Everything
+         below is positioned as a % of this box so it tracks the drawn geometry exactly. */
+      .device { position: relative; aspect-ratio: 75 / 124;
+        height: min(calc(100dvh - 40px), calc(100vw * 124 / 75));
+        background: url(../onepage-top.svg) center / 100% 100% no-repeat; }
+
+      /* Embedded: the parent sizes the iframe to the device's true dimensions (83×132mm),
+         so fill it exactly and hide the standalone keyboard hint. */
+      .embedded #stage { padding: 0; gap: 0; }
+      .embedded .device { height: 100%; }
+      .embedded .hint { display: none; }
+
+      /* E-ink viewable area: SVG rect 13.71,13.87 55.08×92.2, rx/ry 1.0mm → % of the 4,4 75×124 box.
+         border-radius matches the drawn 1mm corner (1/55.08 wide, 1/92.2 tall) so the canvas is
+         clipped to the same rounded rect as the SVG screen — no square corners poking out. */
+      .screen { position: absolute; left: 12.95%; top: 7.96%; width: 73.44%; height: 74.35%;
+        overflow: hidden; border-radius: 1.82% / 1.08%; background: var(--paper); }
+      canvas#fb { display: block; width: 100%; height: 100%; }
+
+      /* Invisible hit targets laid over the keys the SVG already draws. Pill-shaped so
+         the press-feedback darken matches the drawn key. */
+      .hit { position: absolute; margin: 0; padding: 0; border: 0; appearance: none;
+        background: transparent; cursor: pointer; border-radius: 1000px;
+        -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+      .hit:active { background: rgba(0,0,0,0.22); }
+      /* Rocker: one pill split into two press halves (transparent divider). */
+      .rk { flex: 1; border: 0; padding: 0; margin: 0; background: transparent; cursor: pointer;
+        -webkit-tap-highlight-color: transparent; }
+      .rk:active { background: rgba(0,0,0,0.22); }
+
+      /* Right-edge keys — Power (28.49,8.0) short, page rocker (51.37,17.2) long. */
+      .power    { left: 91.33%; top: 19.75%; width: 3.33%; height: 6.45%; }
+      .rocker-v { left: 91.33%; top: 38.20%; width: 3.33%; height: 13.87%; display: flex; flex-direction: column; overflow: hidden; }
+
+      /* Bottom three keys — Back (15.12) | Left/Right rocker (30.67, wide) | Confirm (55.68). */
+      .chin-back    { left: 14.83%; top: 91.81%; width: 15.60%; height: 2.18%; }
+      .chin-rocker  { left: 35.56%; top: 91.81%; width: 28.00%; height: 2.18%; display: flex; overflow: hidden; }
+      .chin-confirm { left: 68.91%; top: 91.81%; width: 15.60%; height: 2.18%; }
+
+      #boot { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+        background: var(--paper); color: #6b6b66; font-size: 12px; transition: opacity .4s ease; }
+      #boot.hidden { opacity: 0; pointer-events: none; }
+      .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,.15); border-top-color: #6b6b66; border-radius: 50%; animation: spin .9s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .err { max-width: 260px; font-size: 11px; color: #a23b2d; text-align: center; line-height: 1.6; padding: 0 14px; }
+      .hint { font-size: 10px; color: #8a8a86; text-align: center; max-width: 300px; line-height: 1.6; letter-spacing: .02em; }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <div class="device">
+        <div class="screen">
+          <canvas id="fb" width="480" height="800"></canvas>
+          <div id="boot"><div class="spinner"></div><div id="boot-label">Loading…</div></div>
+        </div>
+
+        <!-- Right edge -->
+        <button class="hit power" data-btn="6" aria-label="Wake / sleep"></button>
+        <div class="hit rocker-v">
+          <button class="rk" data-btn="4" aria-label="Previous page"></button>
+          <button class="rk" data-btn="5" aria-label="Next page"></button>
+        </div>
+
+        <!-- Chin -->
+        <button class="hit chin-back" data-btn="0" aria-label="Back"></button>
+        <div class="hit chin-rocker">
+          <button class="rk" data-btn="2" aria-label="Left"></button>
+          <button class="rk" data-btn="3" aria-label="Right"></button>
+        </div>
+        <button class="hit chin-confirm" data-btn="1" aria-label="Confirm"></button>
+      </div>
+      <div class="hint" id="hint">Click the keys, or use arrow keys · Enter selects · Backspace back · Esc power</div>
+    </div>
+
+    <script>
+      // Framebuffer: 800x480 landscape, 1-bpp MSB-first. Unpack + rotate 90° CW → 480x800.
+      const SRC_W = 800, SRC_H = 480, DST_W = 480, DST_H = 800, ROW_BYTES = SRC_W >> 3;
+      const canvas = document.getElementById("fb");
+      const ctx = canvas.getContext("2d");
+      const off = document.createElement("canvas"); off.width = DST_W; off.height = DST_H;
+      const offCtx = off.getContext("2d");
+      const imageData = offCtx.createImageData(DST_W, DST_H);
+      const rgba = imageData.data; rgba.fill(0xff);
+      const gray = new Uint8Array(DST_W * DST_H);
+      function syncCanvasSize() {
+        const r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+        const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+        if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+        ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+      }
+      new ResizeObserver(syncCanvasSize).observe(canvas); syncCanvasSize();
+
+      const boot = document.getElementById("boot");
+      function fail(msg) { boot.classList.remove("hidden"); const d = document.createElement("div"); d.className = "err"; d.textContent = msg; boot.replaceChildren(d); }
+
+      const HINT = { en: "Arrow keys move · Enter selects · Backspace back · Esc power",
+                     zh: "方向键移动 · Enter 选择 · Backspace 返回 · Esc 电源" };
+      function uiLang() { let s = ""; try { s = (localStorage.getItem("op-lang") || "").toLowerCase(); } catch {}
+        if (s.startsWith("zh")) return "zh"; if (s.startsWith("en")) return "en";
+        return (navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en"; }
+      (function () { const l = uiLang(); document.documentElement.lang = l; document.getElementById("hint").textContent = HINT[l]; })();
+
+      if (!self.crossOriginIsolated) {
+        fail("This page needs cross-origin isolation (COOP/COEP) for the threaded simulator. Reload once so the service worker can enable it.");
+      }
+
+      let injectButton = null, consumeDirty = null, fbPtr = 0, Module = null;
+      function renderFrame() {
+        const heap = Module.HEAPU8;
+        for (let y = 0; y < SRC_H; y++) { const rowBase = fbPtr + y * ROW_BYTES, dstX = SRC_H - 1 - y;
+          for (let x = 0; x < SRC_W; x++) { const white = (heap[rowBase + (x >> 3)] >> (7 - (x & 7))) & 1; gray[x * DST_W + dstX] = white ? 0xf0 : 0x10; } }
+        for (let Y = 0; Y < DST_H; Y++) { const row0 = Y * DST_W, row1 = (Y + 1 < DST_H ? Y + 1 : Y) * DST_W;
+          for (let X = 0; X < DST_W; X++) { const X1 = X + 1 < DST_W ? X + 1 : X;
+            const out = (gray[row0 + X] + gray[row0 + X1] + gray[row1 + X] + gray[row1 + X1]) >> 2;
+            const di = (row0 + X) << 2; rgba[di] = out; rgba[di + 1] = out; rgba[di + 2] = out; rgba[di + 3] = 0xff; } }
+        offCtx.putImageData(imageData, 0, 0);
+        ctx.drawImage(off, 0, 0, DST_W, DST_H, 0, 0, canvas.width, canvas.height);
+      }
+      function loop() { if (consumeDirty && consumeDirty()) renderFrame(); requestAnimationFrame(loop); }
+
+      const KEY_TO_BTN = { Backspace: 0, Enter: 1, NumpadEnter: 1, ArrowLeft: 2, ArrowRight: 3, ArrowUp: 4, ArrowDown: 5, Escape: 6 };
+      function press(b, d) { if (injectButton) injectButton(b, d ? 1 : 0); }
+      addEventListener("keydown", (e) => { const b = KEY_TO_BTN[e.code] ?? KEY_TO_BTN[e.key]; if (b === undefined) return; e.preventDefault(); if (e.repeat) return; press(b, true); });
+      addEventListener("keyup", (e) => { const b = KEY_TO_BTN[e.code] ?? KEY_TO_BTN[e.key]; if (b === undefined) return; e.preventDefault(); press(b, false); });
+
+      // On-screen buttons (chin + edge nubs): pointer down/up injects the same edge-triggered events.
+      for (const el of document.querySelectorAll("[data-btn]")) {
+        const btn = Number(el.dataset.btn);
+        const down = (e) => { e.preventDefault(); press(btn, true); };
+        const up = (e) => { e.preventDefault(); press(btn, false); };
+        el.addEventListener("pointerdown", down);
+        el.addEventListener("pointerup", up);
+        el.addEventListener("pointerleave", up);
+        el.addEventListener("pointercancel", up);
+      }
+
+      function startupLanguage() { const o = new URLSearchParams(location.search).get("lang"); if (o) return o;
+        return uiLang() === "zh" ? "ZH_CN" : "EN"; }
+      function recentBooksFor(lang) {
+        const book = lang === "ZH_CN"
+          ? { path: "/狂人日记.epub", title: "狂人日记", author: "鲁迅", coverBmpPath: "" }
+          : { path: "/alice-in-wonderland.epub", title: "Alice's Adventures in Wonderland", author: "Lewis Carroll", coverBmpPath: "" };
+        return JSON.stringify({ books: [book] });
+      }
+
+      function start() {
+        const lang = startupLanguage();
+        const V = "20260704-onepage"; // cache-bust: bump on each firmware rebuild
+        const s = document.createElement("script");
+        s.src = "crosspoint_simulator_wasm.js?v=" + V;
+        s.onerror = () => fail("Failed to load simulator wasm.");
+        s.onload = () => {
+          createSimulator({
+            arguments: ["--lang", lang],
+            locateFile: (path) => path + "?v=" + V,
+            preRun: [(M) => { try { M.FS.mkdirTree("/sd/.crosspoint"); M.FS.writeFile("/sd/.crosspoint/recent.json", new TextEncoder().encode(recentBooksFor(lang))); } catch (e) { console.warn("[sim] seed recent failed", e); } }],
+            print: (t) => console.log("[sim]", t), printErr: (t) => console.warn("[sim]", t),
+          }).then((mod) => {
+            Module = mod;
+            injectButton = mod.cwrap("simulator_inject_button", null, ["number", "number"]);
+            consumeDirty = mod.cwrap("simulator_consume_dirty", "number", []);
+            fbPtr = mod.cwrap("simulator_framebuffer_ptr", "number", [])();
+            boot.classList.add("hidden");
+            requestAnimationFrame(loop);
+          }).catch((e) => fail("Simulator failed to start: " + e));
+        };
+        document.body.appendChild(s);
+      }
+      if (self.crossOriginIsolated) start();
+    </script>
+  </body>
+</html>

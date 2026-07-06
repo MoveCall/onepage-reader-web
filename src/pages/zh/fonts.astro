@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import FontTool from '../../components/FontTool.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'zh';
+---
+
+<Layout
+  lang={lang}
+  title="字体工具 — 壹頁 · OnePage"
+  description="在浏览器里把 TTF/OTF 字体裁到只剩你需要的字，供 OnePage 墨水屏阅读器的 SD 卡使用。全程不上传。"
+>
+  <Nav lang={lang} />
+  <FontTool lang={lang} />
+  <Footer lang={lang} showAbout={false} />
+</Layout>

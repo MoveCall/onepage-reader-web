@@ -1,0 +1,45 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+import Logo from './Logo.astro';
+
+interface Props {
+  lang: Lang;
+  showAbout?: boolean;
+}
+const { lang, showAbout = true } = Astro.props;
+const a = ui[lang].about;
+const f = ui[lang].footer;
+const GITHUB_URL = 'https://github.com/MoveCall';
+const year = new Date().getFullYear();
+---
+
+{showAbout && (
+  <section id="about" class="scroll-mt-20 border-t border-ink/12 py-20 sm:py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="font-mono text-xs tracking-wider text-accent-600 uppercase">{a.eyebrow}</p>
+      <h2 class="mt-3 max-w-[24ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink">{a.title}</h2>
+      <div class="mt-5 space-y-4">
+        {a.body.map((p) => <p class="max-w-[60ch] text-base/7 text-pretty text-ink/70">{p}</p>)}
+      </div>
+    </div>
+  </section>
+)}
+
+<footer class="border-t border-ink/12 py-12">
+  <div class="mx-auto flex max-w-5xl flex-col gap-6 px-6 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <Logo class="h-7 w-auto" />
+        <span class="font-mono text-sm font-medium text-ink">{f.tagline}</span>
+      </div>
+      <p class="mt-3 max-w-[52ch] text-sm/6 text-ink/45">{f.openSource}</p>
+      <p class="mt-1 text-sm/6 text-ink/45">{f.rights}</p>
+    </div>
+    <div class="flex items-center gap-3 font-mono text-[13px]">
+      <a href={GITHUB_URL} target="_blank" rel="noopener" class="font-medium text-ink/55 no-underline hover:text-ink">GitHub</a>
+      <span class="text-ink/25">/</span>
+      <span class="text-ink/40">© {year}</span>
+    </div>
+  </div>
+</footer>

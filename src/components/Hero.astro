@@ -1,0 +1,36 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang].hero;
+const GITHUB_URL = 'https://github.com/MoveCall';
+---
+
+<section class="relative min-h-[calc(100dvh-3.5rem)] overflow-hidden">
+  <!-- Centered, airy, product-forward — iPhone-Air style, in our paper/ink palette -->
+  <div class="mx-auto max-w-4xl px-6 pt-24 text-center sm:pt-36">
+    <p class="font-mono text-xs tracking-wider text-ink/45 uppercase" data-reveal>{t.eyebrow}</p>
+    <h1 class="mt-5 font-serif text-6xl font-medium tracking-tight text-ink sm:text-7xl" data-reveal style="--reveal-delay:80ms">
+      <span class="font-mono">OnePage</span><span class="text-ink/30"> · 壹頁</span>
+    </h1>
+    <p class="mx-auto mt-8 max-w-[34ch] text-lg/8 text-pretty text-ink/65 sm:text-xl/8" data-reveal style="--reveal-delay:160ms">{t.title}</p>
+  </div>
+
+  <!-- The thinness shot, large and floating with lots of air -->
+  <div class="mx-auto mt-16 max-w-5xl px-6 sm:mt-24" data-reveal="art" style="--reveal-delay:240ms">
+    <img src={`${import.meta.env.BASE_URL}onepage-r.svg`} alt="OnePage seen edge-on" class="h-auto w-full" />
+    <p class="mt-8 text-center font-mono text-xs text-ink/45">{t.caption}</p>
+  </div>
+
+  <!-- Quiet, centered actions -->
+  <div class="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-sm">
+    <a href="#log" class="text-ink/85 no-underline underline-offset-4 hover:underline">{t.ctaPrimary} →</a>
+    <a href={GITHUB_URL} target="_blank" rel="noopener" class="text-ink/55 no-underline underline-offset-4 hover:text-ink hover:underline">{t.ctaSecondary} ↗</a>
+  </div>
+
+  <div class="pb-24 sm:pb-32"></div>
+</section>

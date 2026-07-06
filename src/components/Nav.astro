@@ -1,0 +1,58 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui, localizedPath } from '../i18n/ui';
+import Logo from './Logo.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang].nav;
+
+const GITHUB_URL = 'https://github.com/MoveCall';
+const otherLang: Lang = lang === 'en' ? 'zh' : 'en';
+const otherLabel = lang === 'en' ? '中文' : 'EN';
+const home = localizedPath('/', lang);
+const fontsPath = localizedPath('/fonts', lang);
+
+// Same page in the other language — strip the base prefix and locale, then rebuild.
+const base = import.meta.env.BASE_URL;
+let logical = Astro.url.pathname;
+if (logical.startsWith(base)) logical = '/' + logical.slice(base.length);
+logical = logical.replace(/^\/zh/, '') || '/';
+const switchHref = localizedPath(logical, otherLang);
+---
+
+<div id="nav-top" aria-hidden="true"></div>
+<nav id="site-nav" class="sticky top-0 z-50 border-b border-ink/12 bg-paper/85 backdrop-blur">
+  <div class="site-nav-inner mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-3">
+    <a href={home} class="flex shrink-0 items-center gap-2.5 no-underline" aria-label="OnePage">
+      <Logo class="h-7 w-auto" />
+      <span class="font-mono text-sm font-medium tracking-tight text-ink">OnePage<span class="hidden text-ink/40 sm:inline">&nbsp;· 壹頁</span></span>
+    </a>
+
+    <div class="flex items-center gap-x-1 font-mono text-[13px] sm:gap-x-3">
+      <a href={`${home}#features`} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.features}</a>
+      <a href={`${home}#log`} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.notes}</a>
+      <a href={fontsPath} class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.fontTool}</a>
+      <a href={GITHUB_URL} target="_blank" rel="noopener" class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.github}</a>
+      <a
+        href={switchHref}
+        class="ml-1 rounded-sm border border-ink/20 px-2 py-1 font-medium text-ink/65 no-underline hover:border-ink/40 hover:text-ink"
+        aria-label="Switch language"
+      >{otherLabel}</a>
+    </div>
+  </div>
+</nav>
+
+<script is:inline>
+  // Shrink + solidify the sticky nav once the page scrolls past the top.
+  (function () {
+    var nav = document.getElementById('site-nav');
+    var sentinel = document.getElementById('nav-top');
+    if (!nav || !sentinel || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(function (entries) {
+      nav.classList.toggle('scrolled', !entries[0].isIntersecting);
+    }).observe(sentinel);
+  })();
+</script>

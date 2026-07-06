@@ -1,0 +1,57 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang].log;
+
+const tone: Record<string, string> = {
+  'In progress': 'text-accent-600 border-accent-300',
+  '进行中': 'text-accent-600 border-accent-300',
+  Done: 'text-ink/50 border-ink/20',
+  '完成': 'text-ink/50 border-ink/20',
+  Decided: 'text-ink/50 border-ink/20',
+  '已定': 'text-ink/50 border-ink/20',
+  Parked: 'text-ink/40 border-ink/15',
+  '搁置': 'text-ink/40 border-ink/15',
+};
+---
+
+<section id="log" class="scroll-mt-20 border-t border-ink/12 py-20 sm:py-24">
+  <div class="mx-auto max-w-3xl px-6">
+    <p class="font-mono text-xs tracking-wider text-accent-600 uppercase" data-reveal>{t.eyebrow}</p>
+    <h2 class="mt-3 max-w-[24ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink" data-reveal style="--reveal-delay:80ms">{t.title}</h2>
+    <p class="mt-4 max-w-[56ch] text-base/7 text-pretty text-ink/65" data-reveal style="--reveal-delay:160ms">{t.lede}</p>
+
+    <!-- timeline -->
+    <ol class="mt-10 border-l border-ink/15">
+      {t.entries.map((e, i) => (
+        <li class="relative pb-9 pl-7 last:pb-0" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+          <span class="absolute top-1.5 -left-[5px] size-2.5 rounded-full border-2 border-paper bg-ink"></span>
+          <div class="flex items-baseline gap-3">
+            <span class="font-mono text-xs text-ink/45">{e.when}</span>
+            <span class:list={['rounded-full border px-2 py-0.5 font-mono text-[11px]', tone[e.tag] ?? 'text-ink/50 border-ink/20']}>{e.tag}</span>
+          </div>
+          <h3 class="mt-1.5 font-serif text-lg font-medium text-ink">{e.title}</h3>
+          <p class="mt-1 max-w-[58ch] text-sm/6 text-ink/70">{e.body}</p>
+        </li>
+      ))}
+    </ol>
+
+    <!-- what's next -->
+    <div class="mt-12">
+      <p class="font-mono text-xs tracking-wider text-ink/45 uppercase">{t.nextLabel}</p>
+      <ul class="mt-4 divide-y divide-ink/10 border-y border-ink/10">
+        {t.next.map((s) => (
+          <li class="flex items-center gap-4 py-3">
+            <span class="w-16 shrink-0 font-mono text-xs text-ink/40">{s.status}</span>
+            <span class="text-sm text-ink/80">{s.items}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

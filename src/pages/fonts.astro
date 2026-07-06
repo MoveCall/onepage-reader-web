@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import FontTool from '../components/FontTool.astro';
+import Footer from '../components/Footer.astro';
+
+const lang = 'en';
+---
+
+<Layout
+  lang={lang}
+  title="Font Tool — OnePage · 壹頁"
+  description="Trim a TTF/OTF font down to just the characters you need, right in your browser, for the OnePage e-reader's SD card. Nothing is uploaded."
+>
+  <Nav lang={lang} />
+  <FontTool lang={lang} />
+  <Footer lang={lang} showAbout={false} />
+</Layout>

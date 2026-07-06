@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Page from '../components/Page.astro';
+
+const lang = 'en';
+---
+
+<Layout
+  lang={lang}
+  title="OnePage · 壹頁 — a 4.26″ open e-ink reader"
+  description="A 4.26-inch e-ink reader I'm building for myself, on an ESP32-C61. Reflowable TXT and EPUB, careful CJK typography, phone-friendly web setup. A personal tinkering project, shared in the open."
+>
+  <Page lang={lang} />
+</Layout>

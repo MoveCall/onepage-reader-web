@@ -1,0 +1,264 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const f = ui[lang].fonts;
+
+const faceFields = [
+  { id: 'fileRegular', label: f.styles.regular, tag: f.required, required: true },
+  { id: 'fileBold', label: f.styles.bold, tag: f.optional, required: false },
+  { id: 'fileItalic', label: f.styles.italic, tag: f.optional, required: false },
+  { id: 'fileBoldItalic', label: f.styles.bolditalic, tag: f.optional, required: false },
+];
+
+// preset display order; defaults checked = common Chinese + CJK punctuation
+const presetOrder = ['chinese-full', 'chinese-l1', 'cjk-punct', 'cjk-all', 'latin-ext', 'greek', 'cyrillic', 'symbols'];
+const defaultChecked = new Set(['chinese-full', 'cjk-punct']);
+
+const fileInputCls =
+  'mt-1.5 block w-full text-sm text-ink/60 file:mr-3 file:rounded-md file:border-0 file:bg-ink/5 file:px-3 file:py-1.5 file:font-mono file:text-xs file:font-medium file:text-ink/80 hover:file:bg-ink/10';
+const textInputCls =
+  'mt-1.5 block w-full rounded-md border border-ink/20 bg-surface px-3 py-2 text-sm text-ink shadow-sm placeholder:text-ink/35 focus:border-accent-500 focus:ring-1 focus:ring-accent-500 focus:outline-none';
+
+// strings the client script needs at runtime
+const t = {
+  building: f.building,
+  errNoFont: f.errNoFont,
+  errFailed: f.errFailed,
+  download: f.download,
+  saved: f.saved,
+};
+---
+
+<section class="py-12 sm:py-16">
+  <div class="mx-auto max-w-3xl px-6">
+    <p class="font-mono text-xs tracking-wider text-accent-600 uppercase">{f.eyebrow}</p>
+    <h1 class="mt-3 font-serif text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl">{f.title}</h1>
+    <p class="mt-4 max-w-[60ch] text-base/7 text-pretty text-ink/65">{f.lede}</p>
+  </div>
+
+  <div class="mx-auto mt-8 max-w-3xl px-6">
+    <div id="fontTool" class="rounded-xl border border-ink/12 bg-surface p-6 shadow-sm sm:p-8" data-i18n={JSON.stringify(t)}>
+
+      <!-- Output name -->
+      <div>
+        <label for="familyName" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.familyLabel}</label>
+        <input type="text" id="familyName" placeholder={f.familyPlaceholder} class={textInputCls} />
+        <p class="mt-1.5 text-xs text-ink/45">{f.familyHint}</p>
+      </div>
+
+      <!-- Font files -->
+      <div class="mt-6">
+        <label class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.facesLabel}</label>
+        <p class="mt-1 text-xs text-ink/45">{f.facesHint}</p>
+        <div class="mt-3 grid gap-4 sm:grid-cols-2">
+          {faceFields.map((ff) => (
+            <div>
+              <label for={ff.id} class="block text-sm font-medium text-ink/80">
+                {ff.label} <span class="font-mono text-[11px] text-ink/40">({ff.tag})</span>
+              </label>
+              <input type="file" id={ff.id} accept=".ttf,.otf,.TTF,.OTF" class={fileInputCls} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Coverage -->
+      <div class="mt-6">
+        <label class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.coverageLabel}</label>
+        <p class="mt-1 text-xs text-ink/45">{f.coverageHint}</p>
+        <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+          {presetOrder.map((id) => (
+            <label class="flex items-center gap-2 text-sm text-ink/80">
+              <input type="checkbox" name="preset" value={id} checked={defaultChecked.has(id)} class="rounded border-ink/30 text-accent-600 focus:ring-accent-500" />
+              {f.presetNames[id]}
+              {f.presetHints[id] && <span class="font-mono text-[11px] text-ink/40">{f.presetHints[id]}</span>}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <!-- Extra characters -->
+      <div class="mt-6">
+        <label for="extraText" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.extraLabel}</label>
+        <p class="mt-1 text-xs text-ink/45">{f.extraHint}</p>
+        <textarea id="extraText" rows="2" placeholder={f.extraPlaceholder} class={textInputCls}></textarea>
+      </div>
+
+      <!-- Custom ranges -->
+      <div class="mt-6">
+        <label for="customRanges" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.customLabel}</label>
+        <input type="text" id="customRanges" placeholder="(0x2900-0x29FF),(0x2E00-0x2EFF)" class={`${textInputCls} font-mono`} />
+        <p class="mt-1.5 text-xs text-ink/45">{f.customHint}</p>
+      </div>
+
+      <!-- Drop hinting -->
+      <div class="mt-6">
+        <label class="flex items-center gap-2 text-sm text-ink/80">
+          <input type="checkbox" id="dropHints" class="rounded border-ink/30 text-accent-600 focus:ring-accent-500" />
+          {f.dropHints}
+        </label>
+        <p class="mt-1 text-xs text-ink/45">{f.dropHintsHint}</p>
+      </div>
+
+      <!-- Build -->
+      <div class="mt-8">
+        <button id="buildBtn" type="button" class="inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 text-sm font-semibold text-paper shadow-sm hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-50">
+          <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 1 1-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 0 1 6.336-4.486l-3.276 3.276a3.004 3.004 0 0 0 2.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852Z"/></svg>
+          {f.buildBtn}
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div id="progressWrap" class="mt-6 hidden">
+        <div class="h-1.5 w-full overflow-hidden rounded-full bg-ink/10">
+          <div id="progressBar" class="h-full rounded-full bg-accent-500 transition-all duration-300" style="width:0%"></div>
+        </div>
+        <p id="progressText" class="mt-2 text-center font-mono text-xs text-ink/55"></p>
+      </div>
+
+      <!-- Results -->
+      <div id="resultsPanel" class="mt-6 hidden">
+        <div class="flex items-center justify-between">
+          <h3 class="font-mono text-xs font-semibold tracking-wide text-ink/70 uppercase">{f.resultsTitle}</h3>
+          <button id="downloadAllBtn" type="button" class="inline-flex items-center gap-1.5 rounded-md bg-ink/5 px-3 py-1.5 text-xs font-medium text-ink/80 hover:bg-ink/10">
+            {f.downloadAll}
+          </button>
+        </div>
+        <ul id="fileList" class="mt-3 divide-y divide-ink/10 border-y border-ink/10"></ul>
+      </div>
+    </div>
+
+    <!-- Install -->
+    <div class="mt-8 rounded-xl border border-ink/12 bg-surface p-6 sm:p-8">
+      <h2 class="font-serif text-lg font-medium text-ink">{f.installTitle}</h2>
+      <ol class="mt-4 list-decimal space-y-2 pl-5 text-sm/6 text-ink/70">
+        {f.installSteps.map((s) => <li>{s}</li>)}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { subsetFont, buildCodepointSet } from '../fonts/subset';
+  import JSZip from 'jszip';
+
+  const root = document.getElementById('fontTool');
+  if (root) {
+    const T = JSON.parse(root.getAttribute('data-i18n') || '{}');
+    const $ = (id: string) => document.getElementById(id) as HTMLElement;
+    const buildBtn = $('buildBtn') as HTMLButtonElement;
+    const progressWrap = $('progressWrap');
+    const progressBar = $('progressBar');
+    const progressText = $('progressText');
+    const resultsPanel = $('resultsPanel');
+    const fileList = $('fileList');
+
+    type Built = { name: string; blob: Blob; url: string };
+    let built: Built[] = [];
+
+    const styleMap: [string, string][] = [
+      ['fileRegular', 'Regular'],
+      ['fileBold', 'Bold'],
+      ['fileItalic', 'Italic'],
+      ['fileBoldItalic', 'BoldItalic'],
+    ];
+
+    function sanitize(name: string) {
+      return (name || 'Font').replace(/[^A-Za-z0-9_一-鿿-]+/g, ' ').trim().replace(/\s+/g, '') || 'Font';
+    }
+    function fmt(bytes: number) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+    }
+
+    async function build() {
+      const regular = ($('fileRegular') as HTMLInputElement).files?.[0];
+      if (!regular) { alert(T.errNoFont); return; }
+
+      const familyInput = ($('familyName') as HTMLInputElement).value.trim();
+      const family = sanitize(familyInput || regular.name.replace(/\.(ttf|otf)$/i, ''));
+      const presets = Array.from(document.querySelectorAll('input[name="preset"]:checked')).map((el) => (el as HTMLInputElement).value);
+      const customRanges = ($('customRanges') as HTMLInputElement).value;
+      const extraText = ($('extraText') as HTMLTextAreaElement).value;
+      const dropHints = ($('dropHints') as HTMLInputElement).checked;
+      const cps = buildCodepointSet(presets, customRanges, extraText);
+
+      const faces: { file: File; style: string }[] = [];
+      for (const [id, style] of styleMap) {
+        const file = ($(id) as HTMLInputElement).files?.[0];
+        if (file) faces.push({ file, style });
+      }
+
+      buildBtn.disabled = true;
+      built.forEach((b) => URL.revokeObjectURL(b.url));
+      built = [];
+      fileList.innerHTML = '';
+      resultsPanel.classList.add('hidden');
+      progressWrap.classList.remove('hidden');
+      progressBar.style.width = '5%';
+
+      try {
+        for (let i = 0; i < faces.length; i++) {
+          const { file, style } = faces[i];
+          progressText.textContent = `${T.building} ${style} (${i + 1}/${faces.length})`;
+          progressBar.style.width = 8 + Math.round((i / faces.length) * 84) + '%';
+          const inBytes = new Uint8Array(await file.arrayBuffer());
+          const out = await subsetFont(inBytes, cps, { dropHints });
+          const ext = /\.otf$/i.test(file.name) ? 'otf' : 'ttf';
+          const name = `${family}-${style}.${ext}`;
+          const blob = new Blob([out], { type: 'font/' + ext });
+          built.push({ name, blob, url: URL.createObjectURL(blob) });
+          addRow(name, inBytes.length, out.length);
+        }
+        progressBar.style.width = '100%';
+        progressText.textContent = '✓';
+        resultsPanel.classList.remove('hidden');
+      } catch (err) {
+        console.error(err);
+        progressText.textContent = T.errFailed;
+      } finally {
+        buildBtn.disabled = false;
+      }
+    }
+
+    function addRow(name: string, orig: number, now: number) {
+      const pct = orig > 0 ? Math.round((1 - now / orig) * 100) : 0;
+      const li = document.createElement('li');
+      li.className = 'flex items-center justify-between gap-3 py-3';
+      const left = document.createElement('div');
+      left.innerHTML =
+        `<div class="text-sm font-medium text-ink">${name}</div>` +
+        `<div class="mt-0.5 font-mono text-xs text-ink/45">${fmt(orig)} → ${fmt(now)} · ${pct}% ${T.saved}</div>`;
+      const a = document.createElement('a');
+      const last = built[built.length - 1];
+      a.href = last.url;
+      a.download = name;
+      a.className = 'shrink-0 rounded-md px-2.5 py-1 font-mono text-xs font-medium text-accent-600 hover:bg-accent-500/10';
+      a.textContent = T.download;
+      li.appendChild(left);
+      li.appendChild(a);
+      fileList.appendChild(li);
+    }
+
+    async function downloadAll() {
+      if (!built.length) return;
+      const zip = new JSZip();
+      for (const b of built) zip.file(b.name, b.blob);
+      const content = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(content);
+      a.download = (($('familyName') as HTMLInputElement).value.trim() || 'fonts').replace(/\s+/g, '_') + '_subset.zip';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    buildBtn.addEventListener('click', build);
+    $('downloadAllBtn').addEventListener('click', downloadAll);
+  }
+</script>

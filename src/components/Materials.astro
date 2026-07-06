@@ -1,0 +1,37 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+import SimulatorEmbed from './SimulatorEmbed.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const m = ui[lang].materials;
+---
+
+<section id="materials" class="border-t border-ink/12 bg-surface py-20 sm:py-28">
+  <div class="mx-auto max-w-5xl px-6">
+    <p class="font-mono text-xs tracking-wider text-accent-600 uppercase" data-reveal>{m.eyebrow}</p>
+    <h2 class="mt-3 max-w-[20ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl" data-reveal style="--reveal-delay:80ms">{m.title}</h2>
+    <p class="mt-4 max-w-[58ch] text-base/7 text-pretty text-ink/65" data-reveal style="--reveal-delay:160ms">{m.lede}</p>
+
+    <div class="mt-14 grid items-center gap-12 lg:grid-cols-[22rem_1fr] lg:gap-16">
+      <div class="order-last lg:order-first" data-reveal="art">
+        <SimulatorEmbed lang={lang} />
+      </div>
+
+      <dl class="divide-y divide-ink/10 border-y border-ink/10">
+        {m.items.map((it, i) => (
+          <div class="flex gap-5 py-5" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <span class="mt-1 font-mono text-xs text-ink/35">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <dt class="font-serif text-lg font-medium text-ink">{it.label}</dt>
+              <dd class="mt-1 max-w-[48ch] text-sm/6 text-ink/65">{it.body}</dd>
+            </div>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>

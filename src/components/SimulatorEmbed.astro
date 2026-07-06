@@ -1,0 +1,47 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const m = ui[lang].materials;
+---
+
+<figure class="mx-auto w-full max-w-[75mm]">
+  <div id="sim-embed" class="relative aspect-[75/124] w-full overflow-hidden rounded-xl">
+    <!-- Poster: the real device art (same front frame the live sim uses), click to bring it to life -->
+    <div id="sim-poster" class="absolute inset-0">
+      <img src={`${import.meta.env.BASE_URL}onepage-top.svg`} alt="" class="h-full w-full" />
+      <button
+        id="sim-launch"
+        type="button"
+        class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-paper/40 backdrop-blur-[1px] transition hover:bg-paper/20"
+        aria-label={m.simLaunch}
+      >
+        <span class="flex size-14 items-center justify-center rounded-full bg-ink text-paper shadow-lg">
+          <svg class="ml-0.5 size-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+        </span>
+        <span class="font-mono text-xs font-medium tracking-wide text-ink">{m.simLaunch}</span>
+      </button>
+    </div>
+  </div>
+  <figcaption class="mt-4 text-center font-mono text-[11px] leading-relaxed text-ink/45">{m.simNote}</figcaption>
+</figure>
+
+<script>
+  const btn = document.getElementById('sim-launch');
+  btn?.addEventListener('click', () => {
+    const embed = document.getElementById('sim-embed');
+    const poster = document.getElementById('sim-poster');
+    if (!embed) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = import.meta.env.BASE_URL + 'simulator/index.html';
+    iframe.title = 'OnePage live simulator';
+    iframe.className = 'absolute inset-0 h-full w-full border-0';
+    iframe.setAttribute('allow', 'cross-origin-isolated');
+    embed.appendChild(iframe);
+    poster?.remove();
+  }, { once: true });
+</script>

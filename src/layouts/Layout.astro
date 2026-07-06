@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+}
+
+const { lang, title, description } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang={lang} class="antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Cross-origin isolation (SharedArrayBuffer) for the embedded WASM simulator.
+         credentialless keeps cross-origin font CSS loading. Reloads once on first visit. -->
+    <script is:inline>window.coi = { coepCredentialless: () => true };</script>
+    <script is:inline src={`${base}coi-serviceworker.js`}></script>
+    <!-- Enable scroll-reveal only when we can observe + are allowed to animate.
+         Set before paint so tagged elements start hidden without a flash. -->
+    <script is:inline>
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-reveal');
+      }
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg?v=2`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Noto+Serif:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-dvh bg-paper font-serif text-ink">
+    <slot />
+    <script is:inline>
+      // Reveal each [data-reveal] once, as it scrolls into view (one-shot, no re-hide).
+      (function () {
+        if (!document.documentElement.classList.contains('js-reveal')) return;
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) {
+                e.target.classList.add('in');
+                io.unobserve(e.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.1 }
+        );
+        document.querySelectorAll('[data-reveal]').forEach(function (el) {
+          io.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>

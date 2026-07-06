@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- One-Page Reader 正面 — 由 正面-线稿图.dxf 精确转换 (1:1, 单位 mm) -->
+<!-- 器件外形 66.5 x 116 mm · 墨水屏可视区 55.08 x 92.2 mm -->
+<svg xmlns="http://www.w3.org/2000/svg" width="75mm" height="124mm"
+     viewBox="4 4 75 124" font-family="-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <!-- 银色铝合金边框 -->
+    <linearGradient id="alu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"    stop-color="#fbfcfc"/>
+      <stop offset="0.12" stop-color="#e4e7e9"/>
+      <stop offset="0.5"  stop-color="#c2c6c9"/>
+      <stop offset="0.88" stop-color="#dfe2e4"/>
+      <stop offset="1"    stop-color="#a9adb0"/>
+    </linearGradient>
+    <!-- 米白面板 -->
+    <linearGradient id="panel" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0"   stop-color="#c8c9c2"/>
+      <stop offset="0.5" stop-color="#bdbeb7"/>
+      <stop offset="1"   stop-color="#b1b2ab"/>
+    </linearGradient>
+    <!-- 按键：比面板更浅 -->
+    <linearGradient id="key" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0"   stop-color="#e6e6e1"/>
+      <stop offset="0.5" stop-color="#dcddd7"/>
+      <stop offset="1"   stop-color="#cfd0ca"/>
+    </linearGradient>
+    <!-- 墨水屏灰 -->
+    <linearGradient id="eink" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0"   stop-color="#a3a3a2"/>
+      <stop offset="1"   stop-color="#949492"/>
+    </linearGradient>
+    <!-- 屏幕内凹阴影 -->
+    <linearGradient id="einkBevel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#000" stop-opacity="0.20"/>
+      <stop offset="0.04" stop-color="#000" stop-opacity="0"/>
+      <stop offset="0.96" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#fff" stop-opacity="0.28"/>
+    </linearGradient>
+    <filter id="drop" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.4" stdDeviation="2.2" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+    <linearGradient id="pillHi" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 侧键（右）：比面板更浅 -->
+  <g fill="url(#key)" stroke="#c8c6bb" stroke-width="0.2">
+    <rect x="72.5" y="28.49" width="2.5" height="8.0" rx="1.0" ry="1.0"/>
+    <rect x="72.5" y="51.37" width="2.5" height="17.2" rx="1.0" ry="1.0"/>
+  </g>
+
+  <!-- 铝合金机身 + 边框台阶 -->
+  <g filter="url(#drop)">
+    <rect x="8.0" y="8.0" width="66.5" height="116.0" rx="5.0" ry="5.0" fill="url(#alu)"/>
+  </g>
+  <rect x="8.5" y="8.5" width="65.5" height="115.0" rx="4.5" ry="4.5" fill="#d7dadd"/>
+  <rect x="9.0" y="9.0" width="64.5" height="114.0" rx="4.0" ry="4.0" fill="#c4c5be"/>
+
+  <!-- 米白面板 -->
+  <rect x="9.1" y="9.1" width="64.3" height="113.8" rx="3.9" ry="3.9" fill="url(#panel)"/>
+
+  <!-- 墨水屏可视区 -->
+  <rect x="13.71" y="13.87" width="55.08" height="92.2" rx="1.0" ry="1.0" fill="url(#eink)"/>
+  <rect x="13.71" y="13.87" width="55.08" height="92.2" rx="1.0" ry="1.0" fill="url(#einkBevel)"/>
+  <rect x="13.71" y="13.87" width="55.08" height="92.2" rx="1.0" ry="1.0" fill="none" stroke="#7f7f7e" stroke-width="0.15"/>
+
+  <!-- 底部三键：扁平胶囊，同面板色 + 细轮廓；外缘几何(含圆弧端帽)取自 DXF -->
+  <!-- 中键 21.0x2.7 R1.35 · 左右键 11.70x2.7 R1.35 -->
+  <g fill="url(#key)" stroke="#c8c6bb" stroke-width="0.2">
+    <rect x="15.12" y="117.85" width="11.70" height="2.7" rx="1.35" ry="1.35"/>
+    <rect x="30.67" y="117.85"  width="21.0"  height="2.7" rx="1.35"  ry="1.35"/>
+    <rect x="55.68" y="117.85" width="11.70" height="2.7" rx="1.35" ry="1.35"/>
+  </g>
+</svg>
