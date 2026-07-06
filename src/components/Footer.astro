@@ -35,6 +35,11 @@ const year = new Date().getFullYear();
       </div>
       <p class="mt-3 max-w-[52ch] text-sm/6 text-ink/45">{f.openSource}</p>
       <p class="mt-1 text-sm/6 text-ink/45">{f.rights}</p>
+      <p id="views" class="mt-3 font-mono text-[11px] text-paper select-none" aria-hidden="true">
+        {lang === 'zh' ? '总访问 ' : 'Views '}<span id="busuanzi_value_site_pv">–</span>
+        <span>·</span>
+        {lang === 'zh' ? ' 访客 ' : ' Visitors '}<span id="busuanzi_value_site_uv">–</span>
+      </p>
     </div>
     <div class="flex items-center gap-3 font-mono text-[13px]">
       <a href={GITHUB_URL} target="_blank" rel="noopener" class="font-medium text-ink/55 no-underline hover:text-ink">GitHub</a>
@@ -43,3 +48,20 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<!-- Page-view counter (vercount — busuanzi-compatible, CORS-enabled so it works under the
+     site's cross-origin isolation). Rendered but color-matched to the background — it keeps
+     counting, just isn't shown. -->
+<script is:inline defer src="https://cn.vercount.one/js"></script>
+<script is:inline>
+  // Peek toggle: the counter is hidden (background-colored) unless the URL ends with #stats.
+  (function () {
+    var v = document.getElementById('views');
+    if (!v) return;
+    function sync() {
+      v.style.color = location.hash === '#stats' ? 'color-mix(in oklch, var(--color-ink) 45%, transparent)' : '';
+    }
+    sync();
+    addEventListener('hashchange', sync);
+  })();
+</script>
