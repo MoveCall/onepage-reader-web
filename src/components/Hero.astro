@@ -1,13 +1,14 @@
 ---
 import type { Lang } from '../i18n/ui';
-import { ui } from '../i18n/ui';
+import { ui, localizedPath } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang].hero;
-const GITHUB_URL = 'https://github.com/MoveCall';
+const GITHUB_URL = 'https://github.com/MoveCall/onepage-reader-web';
+const logPath = localizedPath('/log', lang);
 ---
 
 <section class="relative min-h-[calc(100dvh-3.5rem)] overflow-hidden">
@@ -28,7 +29,7 @@ const GITHUB_URL = 'https://github.com/MoveCall';
 
   <!-- Quiet, centered actions -->
   <div class="mt-14 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-sm">
-    <a href="#log" class="text-ink/85 no-underline underline-offset-4 hover:underline">{t.ctaPrimary} →</a>
+    <a href={logPath} class="text-ink/85 no-underline underline-offset-4 hover:underline">{t.ctaPrimary} →</a>
     <a href={GITHUB_URL} target="_blank" rel="noopener" class="text-ink/55 no-underline underline-offset-4 hover:text-ink hover:underline">{t.ctaSecondary} ↗</a>
   </div>
 

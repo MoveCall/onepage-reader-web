@@ -6,7 +6,7 @@
    ink-red accent. Hairline rules instead of cards. */
 @theme {
   --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Lora", "Noto Serif", "Noto Serif SC", ui-serif, Georgia, serif;
+  --font-serif: "Lora", "Noto Serif SC", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
   /* cool drafting-paper base — deliberately cooler than CrossPoint's warm cream */

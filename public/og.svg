@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#ECEDEF"/>
+
+  <!-- document mascot logo, centered upper -->
+  <g transform="translate(519 96) scale(0.90)">
+    <g stroke="#1C1B1A" fill="#1C1B1A" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round">
+      <path fill="none" d="M 12 27.6 A 15.6 15.6 0 0 1 27.6 12 L 110.28 12 L 168 71.54 L 168 225.4 A 15.6 15.6 0 0 1 152.4 241 L 27.6 241 A 15.6 15.6 0 0 1 12 225.4 Z"/>
+      <polygon stroke="none" points="110.28,12 168,71.54 144.6,69.25 111.06,39.48"/>
+      <circle stroke="none" cx="65.04" cy="115.05" r="9.05"/>
+      <circle stroke="none" cx="114.96" cy="115.05" r="9.05"/>
+      <rect stroke="none" x="71.28" y="150.09" width="37.44" height="10.08" rx="5.04"/>
+    </g>
+  </g>
+
+  <!-- wordmark -->
+  <text x="600" y="430" text-anchor="middle"
+        font-family="'Songti SC','Noto Serif SC','PingFang SC',Georgia,serif"
+        font-size="76" font-weight="600" fill="#1C1B1A">壹页 · OnePage</text>
+
+  <!-- tagline -->
+  <text x="600" y="492" text-anchor="middle"
+        font-family="'PingFang SC','Noto Sans SC',-apple-system,Helvetica,sans-serif"
+        font-size="30" fill="#1C1B1A" fill-opacity="0.6">A 4.26″ open e-ink reader · ESP32-C61</text>
+
+  <!-- accent dot -->
+  <circle cx="600" cy="540" r="5" fill="#A23B2D"/>
+</svg>

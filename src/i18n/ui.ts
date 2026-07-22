@@ -65,8 +65,6 @@ type Content = {
     title: string;
     lede: string;
     caption: string;
-    specsLeft: string[];
-    specsRight: string[];
     ctaPrimary: string;
     ctaSecondary: string;
   };
@@ -112,11 +110,6 @@ type Content = {
     title: string;
     photos: { src: string; alt: string }[];
   };
-  mockup: {
-    home: { menu: string[]; book: string; author: string; progress: string; hints: string[] };
-    reader: { chapter: string; status: string };
-    config: { title: string; sub: string; url: string; net: string; upload: string; hints: string[] };
-  };
   fonts: FontsContent;
 };
 
@@ -134,16 +127,6 @@ export const ui: Record<Lang, Content> = {
       title: 'OnePage — a little e-reader I’m building for myself.',
       lede: 'An open notebook for a 4.26″ e-ink reader on an ESP32-C61. Reflowable text, careful CJK typography, a phone-friendly setup. No roadmap promises — just what works so far, written down as it does.',
       caption: 'OnePage · 壹頁 — seen edge-on. It’s genuinely thin.',
-      specsLeft: [
-        'ESP32-C61 · 16MB flash · 2MB PSRAM',
-        'microSD over SPI · FAT32 only',
-        '7 physical keys · no touch',
-      ],
-      specsRight: [
-        '4.26″ · 800×480 · 219 dpi',
-        '1-bit B/W text · 4-gray covers',
-        'No frontlight — on purpose',
-      ],
       ctaPrimary: 'Read the log',
       ctaSecondary: 'GitHub',
     },
@@ -304,27 +287,6 @@ export const ui: Record<Lang, Content> = {
         { src: '/gallery/IMG_0401.JPG', alt: 'OnePage prototype — back' },
       ],
     },
-    mockup: {
-      home: {
-        menu: ['Browse Files', 'Recent Books', 'Web Setup', 'Settings'],
-        book: 'The Three-Body Problem',
-        author: 'Liu Cixin',
-        progress: '37% · 142 pages left',
-        hints: ['', 'Open', 'Up', 'Down'],
-      },
-      reader: {
-        chapter: 'Chapter One',
-        status: 'The Three-Body Problem',
-      },
-      config: {
-        title: 'Web Setup',
-        sub: 'Server running',
-        url: 'http://onepage.local',
-        net: 'Hotspot · scan to connect',
-        upload: 'Uploading three-body.epub',
-        hints: ['', 'Stop', '', 'Back'],
-      },
-    },
     fonts: {
       eyebrow: 'Font tool',
       title: 'Trim a font down for the SD card.',
@@ -396,16 +358,6 @@ export const ui: Record<Lang, Content> = {
       title: '壹頁 —— 给自己折腾的一台小阅读器。',
       lede: '一台基于 ESP32-C61 的 4.26″ 墨水屏阅读器的公开笔记本。可重排的正文、用心的中文排版、配套手机配置。不画大饼 —— 只记录目前真正跑通的东西。',
       caption: '壹頁 · OnePage —— 侧面看过去，它真的很薄。',
-      specsLeft: [
-        'ESP32-C61 · 16MB Flash · 2MB PSRAM',
-        'microSD（SPI）· 仅 FAT32',
-        '7 个实体键 · 无触摸',
-      ],
-      specsRight: [
-        '4.26″ · 800×480 · 219 dpi',
-        '正文 1-bit 黑白 · 封面 4 灰阶',
-        '没有前光 —— 故意的',
-      ],
       ctaPrimary: '看手记',
       ctaSecondary: 'GitHub',
     },
@@ -565,27 +517,6 @@ export const ui: Record<Lang, Content> = {
         { src: '/gallery/IMG_0400.JPG', alt: '壹頁 原型机 —— 细节' },
         { src: '/gallery/IMG_0401.JPG', alt: '壹頁 原型机 —— 背面' },
       ],
-    },
-    mockup: {
-      home: {
-        menu: ['浏览文件', '最近阅读', '网页配置', '设置'],
-        book: '三体',
-        author: '刘慈欣',
-        progress: '37% · 还剩 142 页',
-        hints: ['', '打开', '上', '下'],
-      },
-      reader: {
-        chapter: '第一章',
-        status: '三体',
-      },
-      config: {
-        title: '网页配置',
-        sub: '服务已开启',
-        url: 'http://onepage.local',
-        net: '热点 · 扫码连接',
-        upload: '正在上传 three-body.epub',
-        hints: ['', '停止', '', '返回'],
-      },
     },
     fonts: {
       eyebrow: '字体工具',

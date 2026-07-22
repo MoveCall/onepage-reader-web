@@ -1,8 +1,17 @@
-# OnePage · 壹頁
+<h1 align="center">
+  <img src="public/gallery/onepage_logo_blink.svg" alt="OnePage logo" height="46" />
+  &nbsp;&nbsp;OnePage · 壹页
+</h1>
 
-Website & build log for **OnePage · 壹頁** — a 4.26″ open e-ink reader I'm building for myself, on an ESP32-C61.
+<p align="center">
+  Website &amp; build log for a 4.26″ open e-ink reader I'm building for myself, on an ESP32-C61.
+</p>
 
-**Live:** https://movecall.github.io/onepage-reader-web/
+<p align="center">
+  <a href="https://movecall.github.io/onepage-reader-web/"><b>Live ↗</b></a>
+</p>
+
+---
 
 It's a personal tinkering project, shared in the open — reflowable TXT/EPUB, careful CJK typography, a phone-friendly web setup. No roadmap promises, just what works so far, written down as it does.
 

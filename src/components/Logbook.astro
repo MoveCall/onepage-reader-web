@@ -1,6 +1,5 @@
 ---
 import type { Lang } from '../i18n/ui';
-import DeviceArt from './DeviceArt.astro';
 
 interface Props {
   lang: Lang;
@@ -9,10 +8,9 @@ interface Props {
   body: string;
   points: string[];
   caption: string;
-  view: 'side' | 'front' | 'back' | 'bezel' | 'ports' | 'button';
   id?: string;
 }
-const { eyebrow, title, body, points, caption, view, id } = Astro.props;
+const { eyebrow, title, body, points, caption, id } = Astro.props;
 ---
 
 <section id={id} class="grid scroll-mt-20 items-center gap-x-12 gap-y-8 lg:grid-cols-[1fr_24rem]">
@@ -31,24 +29,17 @@ const { eyebrow, title, body, points, caption, view, id } = Astro.props;
   </div>
 
   <figure class="flex flex-col" data-reveal="art" style="--reveal-delay:120ms">
-    {view === 'bezel' ? (
-      /* Crop of the real device art: the top strip — silver edge, the narrow white
-         bezel, and the top of the screen. viewBox windows onepage-top.svg (4 4 75 124).
-         No card — it sits straight on the page; the bottom fades into the paper so the
-         cut edge of the screen dissolves instead of ending in a hard line. */
-      <svg
-        viewBox="6 6 71 33"
-        class="h-auto w-full [-webkit-mask-image:linear-gradient(to_bottom,#000_0%,#000_75%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_0%,#000_75%,transparent_100%)]"
-        role="img"
-        aria-label={caption}
-      >
-        <image href={`${import.meta.env.BASE_URL}onepage-top.svg`} x="4" y="4" width="75" height="124" />
-      </svg>
-    ) : (
-      <div class="rounded-xl border border-ink/10 bg-surface px-5 py-6">
-        <DeviceArt view={view} />
-      </div>
-    )}
+    {/* Crop of the real device art: the top strip — silver edge, the narrow white bezel, and
+        the top of the screen. viewBox windows onepage-top.svg (4 4 75 124); the bottom fades
+        into the paper so the cut edge of the screen dissolves instead of ending in a hard line. */}
+    <svg
+      viewBox="6 6 71 33"
+      class="h-auto w-full [-webkit-mask-image:linear-gradient(to_bottom,#000_0%,#000_75%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_0%,#000_75%,transparent_100%)]"
+      role="img"
+      aria-label={caption}
+    >
+      <image href={`${import.meta.env.BASE_URL}onepage-top.svg`} x="4" y="4" width="75" height="124" />
+    </svg>
     <figcaption class="mt-3 text-center font-mono text-xs text-ink/45">{caption}</figcaption>
   </figure>
 </section>

@@ -7,7 +7,6 @@ import Materials from './Materials.astro';
 import Gallery from './Gallery.astro';
 import Logbook from './Logbook.astro';
 import Capabilities from './Capabilities.astro';
-import BuildLog from './BuildLog.astro';
 import Specs from './Specs.astro';
 import Footer from './Footer.astro';
 
@@ -28,12 +27,11 @@ const fe = ui[lang].features;
 <!-- Reading spotlight + the rest as a capability grid -->
 <section id="features" class="scroll-mt-20 border-t border-ink/12 bg-surface py-20 sm:py-28">
   <div class="mx-auto max-w-5xl space-y-16 px-6">
-    <Logbook lang={lang} {...fe.reading} view="bezel" id="reading" />
+    <Logbook lang={lang} {...fe.reading} id="reading" />
     <div class="rule-hair"></div>
     <Capabilities lang={lang} />
   </div>
 </section>
 
-<BuildLog lang={lang} />
 <Specs lang={lang} />
 <Footer lang={lang} />

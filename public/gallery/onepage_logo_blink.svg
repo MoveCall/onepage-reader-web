@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ONE PAGE 壹页 — document mascot logo with a blinking-eye animation (CSS/SMIL, loops). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 253" width="180" height="253"
+     fill="none" role="img" aria-label="ONE PAGE logo (blinking)">
+  <style>
+    /* Ink adapts to light/dark backgrounds (GitHub README, OS theme, etc.). */
+    .ink { stroke: #1C1B1A; fill: #1C1B1A; }
+    @media (prefers-color-scheme: dark) { .ink { stroke: #ECEDEF; fill: #ECEDEF; } }
+    /* Eyes squash shut briefly, twice, then rest — a natural blink cycle. */
+    .eye {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: blink 5s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 40%, 100% { transform: scaleY(1); }
+      42%           { transform: scaleY(0.08); }
+      44%           { transform: scaleY(1); }
+      /* second quick blink */
+      50%           { transform: scaleY(1); }
+      52%           { transform: scaleY(0.08); }
+      54%           { transform: scaleY(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .eye { animation: none; }
+    }
+  </style>
+  <g class="ink" stroke-width="4.7"
+     stroke-linejoin="round" stroke-linecap="round">
+    <!-- document outline: rounded TL/BR/BL corners; top-right cut by the fold crease A->C -->
+    <path fill="none" d="
+      M 12 27.6
+      A 15.6 15.6 0 0 1 27.6 12
+      L 110.28 12
+      L 168 71.54
+      L 168 225.4
+      A 15.6 15.6 0 0 1 152.4 241
+      L 27.6 241
+      A 15.6 15.6 0 0 1 12 225.4
+      Z"/>
+    <!-- folded-over flap: crease A-C parallel to free edge E-D -->
+    <polygon stroke="none" points="110.28,12 168,71.54 144.6,69.25 111.06,39.48"/>
+    <!-- eyes (animated) -->
+    <ellipse class="eye" stroke="none" cx="65.04"  cy="115.05" rx="9.05" ry="9.05"/>
+    <ellipse class="eye" stroke="none" cx="114.96" cy="115.05" rx="9.05" ry="9.05"/>
+    <!-- mouth -->
+    <rect stroke="none" x="71.28" y="150.09" width="37.44" height="10.08" rx="5.04"/>
+  </g>
+</svg>

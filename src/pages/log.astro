@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import BuildLog from '../components/BuildLog.astro';
+import Footer from '../components/Footer.astro';
+
+const lang = 'en';
+---
+
+<Layout
+  lang={lang}
+  title="Build log — OnePage · 壹頁"
+  description="Rough notes from bring-up of OnePage · 壹頁 — a 4.26″ open e-ink reader on the ESP32-C61. Newest first."
+>
+  <Nav lang={lang} />
+  <BuildLog lang={lang} />
+  <Footer lang={lang} showAbout={false} />
+</Layout>

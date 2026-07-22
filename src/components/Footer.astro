@@ -10,12 +10,12 @@ interface Props {
 const { lang, showAbout = true } = Astro.props;
 const a = ui[lang].about;
 const f = ui[lang].footer;
-const GITHUB_URL = 'https://github.com/MoveCall';
+const GITHUB_URL = 'https://github.com/MoveCall/onepage-reader-web';
 const year = new Date().getFullYear();
 ---
 
 {showAbout && (
-  <section id="about" class="scroll-mt-20 border-t border-ink/12 py-20 sm:py-24">
+  <section id="about" class="scroll-mt-20 border-t border-ink/12 bg-surface py-20 sm:py-24">
     <div class="mx-auto max-w-3xl px-6">
       <p class="font-mono text-xs tracking-wider text-accent-600 uppercase">{a.eyebrow}</p>
       <h2 class="mt-3 max-w-[24ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink">{a.title}</h2>

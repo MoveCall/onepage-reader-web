@@ -1,12 +1,21 @@
 ---
 import type { Lang } from '../i18n/ui';
 import { ui } from '../i18n/ui';
+import { Image } from 'astro:assets';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const g = ui[lang].gallery;
+
+// Optimized (webp + srcset) gallery images from src/assets, matched to the i18n alt text by filename.
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.JPG', { eager: true });
+const byName: Record<string, ImageMetadata> = {};
+for (const path in files) byName[path.split('/').pop()!] = files[path].default;
+const photos = g.photos
+  .map((p) => ({ alt: p.alt, img: byName[p.src.split('/').pop()!] }))
+  .filter((p) => p.img);
 ---
 
 <section id="gallery" class="scroll-mt-20 overflow-hidden border-t border-ink/12 py-20 sm:py-24">
@@ -20,15 +29,16 @@ const g = ui[lang].gallery;
     id="gallery-track"
     class="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-7rem)] pb-3 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:gap-6 sm:px-[calc(50%-9rem)] [&::-webkit-scrollbar]:hidden"
   >
-    {g.photos.map((p) => (
+    {photos.map((p) => (
       <figure class="gcard shrink-0 snap-center">
-        <img
-          src={`${import.meta.env.BASE_URL}${p.src.replace(/^\//, '')}`}
+        <Image
+          src={p.img}
           alt={p.alt}
-          width="1086"
-          height="1448"
+          widths={[288, 576, 864]}
+          sizes="(min-width: 640px) 288px, 224px"
+          format="webp"
+          quality={72}
           loading="lazy"
-          decoding="async"
           class="aspect-[3/4] w-56 rounded-xl object-cover shadow-md ring-1 ring-ink/10 sm:w-72"
         />
       </figure>
