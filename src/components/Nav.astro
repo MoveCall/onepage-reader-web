@@ -29,14 +29,14 @@ const switchHref = localizedPath(logical, otherLang);
   <div class="site-nav-inner mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-3">
     <a href={home} class="flex shrink-0 items-center gap-2.5 no-underline" aria-label="OnePage">
       <Logo class="h-7 w-auto" />
-      <span class="font-mono text-sm font-medium tracking-tight text-ink">OnePage<span class="hidden text-ink/40 sm:inline">&nbsp;· 壹頁</span></span>
+      <span class="font-mono text-sm font-medium tracking-tight text-ink">OnePage<span class="hidden text-ink/55 sm:inline">&nbsp;· 壹頁</span></span>
     </a>
 
     <div class="flex items-center gap-x-1 font-mono text-[13px] sm:gap-x-3">
       <a href={`${home}#features`} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.features}</a>
       <a href={logPath} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.notes}</a>
       <a href={fontsPath} class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.fontTool}</a>
-      <a href={GITHUB_URL} target="_blank" rel="noopener" class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.github}</a>
+      <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.github}</a>
       <a
         href={switchHref}
         class="ml-1 rounded-sm border border-ink/20 px-2 py-1 font-medium text-ink/65 no-underline hover:border-ink/40 hover:text-ink"

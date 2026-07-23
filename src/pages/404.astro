@@ -15,7 +15,7 @@ const home = localizedPath('/', lang);
   description="This page doesn't exist. Head back to OnePage · 壹頁."
 >
   <Nav lang={lang} />
-  <section class="flex min-h-[calc(100dvh-3.5rem)] flex-col items-center justify-center px-6 text-center">
+  <main class="flex min-h-[calc(100dvh-3.5rem)] flex-col items-center justify-center px-6 text-center">
     <Logo class="h-28 w-auto text-ink/80 sm:h-32" />
     <p class="mt-10 font-serif text-7xl font-medium tracking-tight text-ink sm:text-8xl">404</p>
     <h1 class="mt-5 max-w-[22ch] font-serif text-2xl font-medium tracking-tight text-balance text-ink sm:text-3xl">
@@ -28,6 +28,6 @@ const home = localizedPath('/', lang);
       href={home}
       class="mt-10 rounded-full border border-ink/20 px-5 py-2 font-mono text-sm text-ink/85 no-underline transition hover:border-ink/40 hover:text-ink"
     >← Back to OnePage · 壹頁</a>
-  </section>
+  </main>
   <Footer lang={lang} showAbout={false} />
 </Layout>

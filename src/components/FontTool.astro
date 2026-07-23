@@ -48,18 +48,18 @@ const t = {
       <div>
         <label for="familyName" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.familyLabel}</label>
         <input type="text" id="familyName" placeholder={f.familyPlaceholder} class={textInputCls} />
-        <p class="mt-1.5 text-xs text-ink/45">{f.familyHint}</p>
+        <p class="mt-1.5 text-xs text-ink/65">{f.familyHint}</p>
       </div>
 
       <!-- Font files -->
       <div class="mt-6">
         <label class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.facesLabel}</label>
-        <p class="mt-1 text-xs text-ink/45">{f.facesHint}</p>
+        <p class="mt-1 text-xs text-ink/65">{f.facesHint}</p>
         <div class="mt-3 grid gap-4 sm:grid-cols-2">
           {faceFields.map((ff) => (
             <div>
               <label for={ff.id} class="block text-sm font-medium text-ink/80">
-                {ff.label} <span class="font-mono text-[11px] text-ink/40">({ff.tag})</span>
+                {ff.label} <span class="font-mono text-[11px] text-ink/55">({ff.tag})</span>
               </label>
               <input type="file" id={ff.id} accept=".ttf,.otf,.TTF,.OTF" class={fileInputCls} />
             </div>
@@ -70,13 +70,13 @@ const t = {
       <!-- Coverage -->
       <div class="mt-6">
         <label class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.coverageLabel}</label>
-        <p class="mt-1 text-xs text-ink/45">{f.coverageHint}</p>
+        <p class="mt-1 text-xs text-ink/65">{f.coverageHint}</p>
         <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
           {presetOrder.map((id) => (
             <label class="flex items-center gap-2 text-sm text-ink/80">
               <input type="checkbox" name="preset" value={id} checked={defaultChecked.has(id)} class="rounded border-ink/30 text-accent-600 focus:ring-accent-500" />
               {f.presetNames[id]}
-              {f.presetHints[id] && <span class="font-mono text-[11px] text-ink/40">{f.presetHints[id]}</span>}
+              {f.presetHints[id] && <span class="font-mono text-[11px] text-ink/55">{f.presetHints[id]}</span>}
             </label>
           ))}
         </div>
@@ -85,7 +85,7 @@ const t = {
       <!-- Extra characters -->
       <div class="mt-6">
         <label for="extraText" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.extraLabel}</label>
-        <p class="mt-1 text-xs text-ink/45">{f.extraHint}</p>
+        <p class="mt-1 text-xs text-ink/65">{f.extraHint}</p>
         <textarea id="extraText" rows="2" placeholder={f.extraPlaceholder} class={textInputCls}></textarea>
       </div>
 
@@ -93,7 +93,7 @@ const t = {
       <div class="mt-6">
         <label for="customRanges" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.customLabel}</label>
         <input type="text" id="customRanges" placeholder="(0x2900-0x29FF),(0x2E00-0x2EFF)" class={`${textInputCls} font-mono`} />
-        <p class="mt-1.5 text-xs text-ink/45">{f.customHint}</p>
+        <p class="mt-1.5 text-xs text-ink/65">{f.customHint}</p>
       </div>
 
       <!-- Drop hinting -->
@@ -102,7 +102,7 @@ const t = {
           <input type="checkbox" id="dropHints" class="rounded border-ink/30 text-accent-600 focus:ring-accent-500" />
           {f.dropHints}
         </label>
-        <p class="mt-1 text-xs text-ink/45">{f.dropHintsHint}</p>
+        <p class="mt-1 text-xs text-ink/65">{f.dropHintsHint}</p>
       </div>
 
       <!-- Build -->
@@ -234,7 +234,7 @@ const t = {
       const left = document.createElement('div');
       left.innerHTML =
         `<div class="text-sm font-medium text-ink">${name}</div>` +
-        `<div class="mt-0.5 font-mono text-xs text-ink/45">${fmt(orig)} → ${fmt(now)} · ${pct}% ${T.saved}</div>`;
+        `<div class="mt-0.5 font-mono text-xs text-ink/65">${fmt(orig)} → ${fmt(now)} · ${pct}% ${T.saved}</div>`;
       const a = document.createElement('a');
       const last = built[built.length - 1];
       a.href = last.url;

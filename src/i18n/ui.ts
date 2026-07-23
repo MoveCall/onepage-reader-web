@@ -30,7 +30,6 @@ type FontsContent = {
   optional: string;
   coverageLabel: string;
   coverageHint: string;
-  baseNote: string;
   presetNames: Record<string, string>;
   presetHints: Record<string, string>;
   extraLabel: string;
@@ -55,7 +54,6 @@ type FontsContent = {
 type Content = {
   nav: {
     features: string;
-    hardware: string;
     notes: string;
     fontTool: string;
     github: string;
@@ -108,7 +106,8 @@ type Content = {
   gallery: {
     eyebrow: string;
     title: string;
-    photos: { src: string; alt: string }[];
+    dotLabel: string;
+    photos: { src: string; alt: string; title: string; sub: string }[];
   };
   fonts: FontsContent;
 };
@@ -117,7 +116,6 @@ export const ui: Record<Lang, Content> = {
   en: {
     nav: {
       features: 'The build',
-      hardware: 'Hardware',
       notes: 'Log',
       fontTool: 'Font Tool',
       github: 'GitHub',
@@ -279,12 +277,13 @@ export const ui: Record<Lang, Content> = {
     gallery: {
       eyebrow: 'Renders',
       title: 'A first look at the design.',
+      dotLabel: 'View photo',
       photos: [
-        { src: '/gallery/IMG_0397.JPG', alt: 'OnePage prototype — front' },
-        { src: '/gallery/IMG_0398.JPG', alt: 'OnePage prototype in hand' },
-        { src: '/gallery/IMG_0399.JPG', alt: 'OnePage prototype detail' },
-        { src: '/gallery/IMG_0400.JPG', alt: 'OnePage prototype detail' },
-        { src: '/gallery/IMG_0401.JPG', alt: 'OnePage prototype — back' },
+        { src: '/gallery/IMG_0397.JPG', alt: 'OnePage — seen edge-on', title: 'Genuinely thin', sub: 'Seen edge-on' },
+        { src: '/gallery/IMG_0398.JPG', alt: 'OnePage — top bezel', title: 'The top quarter', sub: 'Bezels pulled in tight' },
+        { src: '/gallery/IMG_0399.JPG', alt: 'OnePage — bottom at 45°', title: 'Bottom, at 45°', sub: 'Keys and ports, all in a row' },
+        { src: '/gallery/IMG_0400.JPG', alt: 'OnePage — wake key', title: 'The wake key', sub: 'Restrained, but easy to reach' },
+        { src: '/gallery/IMG_0401.JPG', alt: 'OnePage — microSD slot', title: 'A little surprise', sub: 'The microSD slot has a face' },
       ],
     },
     fonts: {
@@ -301,7 +300,6 @@ export const ui: Record<Lang, Content> = {
       optional: 'optional',
       coverageLabel: 'Character coverage',
       coverageHint: 'Pick what your books need. More coverage = larger file. Base Latin and common punctuation are always kept.',
-      baseNote: 'Base coverage (ASCII + punctuation) is always included.',
       presetNames: {
         'chinese-full': 'Chinese · GB2312 (6763)',
         'chinese-l1': 'Chinese · common (3755)',
@@ -348,7 +346,6 @@ export const ui: Record<Lang, Content> = {
   zh: {
     nav: {
       features: '在做什么',
-      hardware: '硬件',
       notes: '手记',
       fontTool: '字体工具',
       github: 'GitHub',
@@ -510,12 +507,13 @@ export const ui: Record<Lang, Content> = {
     gallery: {
       eyebrow: '渲染',
       title: '先看看它的样子。',
+      dotLabel: '查看照片',
       photos: [
-        { src: '/gallery/IMG_0397.JPG', alt: '壹頁 原型机 —— 正面' },
-        { src: '/gallery/IMG_0398.JPG', alt: '壹頁 原型机 —— 手持' },
-        { src: '/gallery/IMG_0399.JPG', alt: '壹頁 原型机 —— 细节' },
-        { src: '/gallery/IMG_0400.JPG', alt: '壹頁 原型机 —— 细节' },
-        { src: '/gallery/IMG_0401.JPG', alt: '壹頁 原型机 —— 背面' },
+        { src: '/gallery/IMG_0397.JPG', alt: '壹頁 —— 侧面', title: '它真的很薄', sub: '立起来给你看' },
+        { src: '/gallery/IMG_0398.JPG', alt: '壹頁 —— 上边框', title: '上方那 1/4', sub: '边框收得很窄' },
+        { src: '/gallery/IMG_0399.JPG', alt: '壹頁 —— 底部 45°', title: '底部 45° 视角', sub: '三段式按键和接口，一排排开' },
+        { src: '/gallery/IMG_0400.JPG', alt: '壹頁 —— 唤醒键', title: '唤醒键特写', sub: '克制，但顺手' },
+        { src: '/gallery/IMG_0401.JPG', alt: '壹頁 —— microSD 卡槽', title: '意外惊喜', sub: 'micro SD 那块，长了一张脸' },
       ],
     },
     fonts: {
@@ -532,7 +530,6 @@ export const ui: Record<Lang, Content> = {
       optional: '可选',
       coverageLabel: '字符覆盖',
       coverageHint: '按你的书需要勾选。覆盖越多，文件越大。基础拉丁字母和常用标点始终保留。',
-      baseNote: '基础覆盖（ASCII + 标点）始终包含。',
       presetNames: {
         'chinese-full': '中文 · GB2312（6763）',
         'chinese-l1': '中文 · 常用（3755）',
@@ -578,17 +575,8 @@ export const ui: Record<Lang, Content> = {
   },
 };
 
-/** Site base path (e.g. '/onepagereader-web/'); '/' in dev. Always ends with '/'. */
+/** Site base path (e.g. '/onepage-reader-web/'); '/' in dev. Always ends with '/'. */
 const BASE = import.meta.env.BASE_URL;
-
-export function getLangFromUrl(url: URL): Lang {
-  // Strip the base prefix before reading the locale segment.
-  let path = url.pathname;
-  if (path.startsWith(BASE)) path = '/' + path.slice(BASE.length);
-  const [, seg] = path.split('/');
-  if (seg === 'zh') return 'zh';
-  return 'en';
-}
 
 /** Build a locale-aware, base-prefixed href. en is the default (no locale prefix); zh is /zh/. */
 export function localizedPath(path: string, lang: Lang): string {

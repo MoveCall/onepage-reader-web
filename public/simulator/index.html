@@ -164,7 +164,7 @@
 
       function start() {
         const lang = startupLanguage();
-        const V = "20260722-zh3"; // cache-bust: bump on each firmware rebuild
+        const V = "20260722-zh4"; // cache-bust: bump on each firmware rebuild
         const s = document.createElement("script");
         s.src = "crosspoint_simulator_wasm.js?v=" + V;
         s.onerror = () => fail("Failed to load simulator wasm.");

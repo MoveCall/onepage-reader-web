@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="public/gallery/onepage_logo_blink.svg" alt="OnePage logo" height="46" />
+  <img src="docs/_archive/onepage_logo_blink.svg" alt="OnePage logo" height="46" />
   &nbsp;&nbsp;OnePage · 壹页
 </h1>
 

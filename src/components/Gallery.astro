@@ -14,7 +14,7 @@ const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.
 const byName: Record<string, ImageMetadata> = {};
 for (const path in files) byName[path.split('/').pop()!] = files[path].default;
 const photos = g.photos
-  .map((p) => ({ alt: p.alt, img: byName[p.src.split('/').pop()!] }))
+  .map((p) => ({ alt: p.alt, title: p.title, sub: p.sub, img: byName[p.src.split('/').pop()!] }))
   .filter((p) => p.img);
 ---
 
@@ -24,31 +24,39 @@ const photos = g.photos
     <h2 class="mt-3 max-w-[24ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink" data-reveal style="--reveal-delay:80ms">{g.title}</h2>
   </div>
 
-  <!-- Coverflow: the centered card is sharp; queued cards dim, blur, and shrink. -->
+  <!-- Coverflow: the centered card is sharp; queued cards dim, blur, and shrink.
+       Center padding = half the card width per breakpoint, so the active card sits centered. -->
   <div
     id="gallery-track"
-    class="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-7rem)] pb-3 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:gap-6 sm:px-[calc(50%-9rem)] [&::-webkit-scrollbar]:hidden"
+    class="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-8rem)] pb-3 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:gap-6 sm:px-[calc(50%-10rem)] lg:px-[calc(50%-12rem)] [&::-webkit-scrollbar]:hidden"
   >
-    {photos.map((p) => (
-      <figure class="gcard shrink-0 snap-center">
+    {photos.map((p, i) => (
+      <figure class="gcard relative shrink-0 snap-center">
         <Image
           src={p.img}
           alt={p.alt}
-          widths={[288, 576, 864]}
-          sizes="(min-width: 640px) 288px, 224px"
+          widths={[384, 576, 768]}
+          sizes="(min-width: 1024px) 384px, (min-width: 640px) 320px, 256px"
           format="webp"
           quality={72}
           loading="lazy"
-          class="aspect-[3/4] w-56 rounded-xl object-cover shadow-md ring-1 ring-ink/10 sm:w-72"
+          class="aspect-[3/4] w-64 rounded-xl object-cover shadow-md ring-1 ring-ink/10 sm:w-80 lg:w-96"
         />
+        {/* Text overlay — follows the site language; replaces the burnt-in poster text once
+            the plain (text-free) renders are swapped in. Light ink for the current dark art. */}
+        <figcaption class="pointer-events-none absolute inset-x-0 top-0 rounded-t-xl p-5 sm:p-6">
+          <p class="font-mono text-[11px] tracking-wider text-white/60">{String(i + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}</p>
+          <h3 class="mt-1.5 font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">{p.title}</h3>
+          <p class="mt-1 text-sm/6 text-white/70">{p.sub}</p>
+        </figcaption>
       </figure>
     ))}
   </div>
 
   <!-- Carousel status: floats at the bottom of the viewport while the gallery is on screen -->
   <div class="gallery-dots flex items-center gap-3">
-    {g.photos.map((_, i) => (
-      <button type="button" class="gallery-dot" data-i={i} aria-label={`View photo ${i + 1}`}>
+    {photos.map((_, i) => (
+      <button type="button" class="gallery-dot" data-i={i} aria-label={`${g.dotLabel} ${i + 1}`}>
         <span class="gallery-dot-fill"></span>
       </button>
     ))}

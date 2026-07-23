@@ -24,7 +24,7 @@ const m = ui[lang].materials;
       <dl class="divide-y divide-ink/10 border-y border-ink/10">
         {m.items.map((it, i) => (
           <div class="flex gap-5 py-5" data-reveal style={`--reveal-delay:${i * 90}ms`}>
-            <span class="mt-1 font-mono text-xs text-ink/35">{String(i + 1).padStart(2, '0')}</span>
+            <span class="mt-1 font-mono text-xs text-ink/55">{String(i + 1).padStart(2, '0')}</span>
             <div>
               <dt class="font-serif text-lg font-medium text-ink">{it.label}</dt>
               <dd class="mt-1 max-w-[48ch] text-sm/6 text-ink/65">{it.body}</dd>
