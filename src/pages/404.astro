@@ -7,14 +7,17 @@ import { localizedPath } from '../i18n/ui';
 
 const lang = 'en';
 const home = localizedPath('/', lang);
+// No /zh/404/ page exists, so send the language switch to the zh home instead of a dead loop.
+const zhHome = localizedPath('/', 'zh');
 ---
 
 <Layout
   lang={lang}
   title="Not found — OnePage · 壹頁"
   description="This page doesn't exist. Head back to OnePage · 壹頁."
+  noindex
 >
-  <Nav lang={lang} />
+  <Nav lang={lang} switchHrefOverride={zhHome} />
   <main class="flex min-h-[calc(100dvh-3.5rem)] flex-col items-center justify-center px-6 text-center">
     <Logo class="h-28 w-auto text-ink/80 sm:h-32" />
     <p class="mt-10 font-serif text-7xl font-medium tracking-tight text-ink sm:text-8xl">404</p>

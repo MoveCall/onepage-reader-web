@@ -7,21 +7,25 @@ interface Props {
   lang: Lang;
   title: string;
   description: string;
+  noindex?: boolean;
 }
 
-const { lang, title, description } = Astro.props;
+const { lang, title, description, noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 // Absolute URLs for social cards (og:image / canonical must be absolute).
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL(`${base}og.png`, Astro.site).href;
+// Fall back to localhost if `site` is unset (e.g. a fork missing astro.config's site) so
+// `new URL(path, undefined)` can't throw and abort the whole static build.
+const siteOrigin = Astro.site ?? new URL('http://localhost:4321');
+const canonical = new URL(Astro.url.pathname, siteOrigin).href;
+const ogImage = new URL(`${base}og.png`, siteOrigin).href;
 
 // hreflang: resolve this page's counterpart in each language. Strip base + locale to the
 // logical path, then rebuild per-locale (same approach as Nav's language switch).
 let logical = Astro.url.pathname;
 if (logical.startsWith(base)) logical = '/' + logical.slice(base.length);
 logical = logical.replace(/^\/zh(?=\/|$)/, '') || '/';
-const enUrl = new URL(localizedPath(logical, 'en'), Astro.site).href;
-const zhUrl = new URL(localizedPath(logical, 'zh'), Astro.site).href;
+const enUrl = new URL(localizedPath(logical, 'en'), siteOrigin).href;
+const zhUrl = new URL(localizedPath(logical, 'zh'), siteOrigin).href;
 ---
 
 <!doctype html>
@@ -42,10 +46,16 @@ const zhUrl = new URL(localizedPath(logical, 'zh'), Astro.site).href;
     </script>
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="en" href={enUrl} />
-    <link rel="alternate" hreflang="zh" href={zhUrl} />
-    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    {noindex ? (
+      <meta name="robots" content="noindex" />
+    ) : (
+      <>
+        <link rel="canonical" href={canonical} />
+        <link rel="alternate" hreflang="en" href={enUrl} />
+        <link rel="alternate" hreflang="zh" href={zhUrl} />
+        <link rel="alternate" hreflang="x-default" href={enUrl} />
+      </>
+    )}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

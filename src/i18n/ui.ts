@@ -581,7 +581,10 @@ const BASE = import.meta.env.BASE_URL;
 /** Build a locale-aware, base-prefixed href. en is the default (no locale prefix); zh is /zh/. */
 export function localizedPath(path: string, lang: Lang): string {
   const clean = path.startsWith('/') ? path : `/${path}`;
-  const locale = lang === 'en' ? (clean === '/' ? '/' : clean) : clean === '/' ? '/zh/' : `/zh${clean}`;
+  let locale = lang === 'en' ? (clean === '/' ? '/' : clean) : clean === '/' ? '/zh/' : `/zh${clean}`;
+  // Astro emits dir-style pages (dist/log/index.html), so keep a trailing slash to
+  // avoid a 301 hop on every internal link. Skip files that carry an extension.
+  if (!locale.endsWith('/') && !locale.slice(locale.lastIndexOf('/') + 1).includes('.')) locale += '/';
   // BASE ends with '/', so drop the leading slash of the locale path when joining.
   return BASE + locale.slice(1);
 }

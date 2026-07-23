@@ -18,16 +18,18 @@ const photos = g.photos
   .filter((p) => p.img);
 ---
 
-<section id="gallery" class="scroll-mt-20 overflow-hidden border-t border-ink/12 py-20 sm:py-24">
+<section id="gallery" aria-labelledby="gallery-heading" class="scroll-mt-20 overflow-hidden border-t border-ink/12 py-20 sm:py-24">
   <div class="mx-auto max-w-5xl px-6">
     <p class="font-mono text-xs tracking-wider text-accent-600 uppercase" data-reveal>{g.eyebrow}</p>
-    <h2 class="mt-3 max-w-[24ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink" data-reveal style="--reveal-delay:80ms">{g.title}</h2>
+    <h2 id="gallery-heading" class="mt-3 max-w-[24ch] font-serif text-3xl font-medium tracking-tight text-balance text-ink" data-reveal style="--reveal-delay:80ms">{g.title}</h2>
   </div>
 
   <!-- Coverflow: the centered card is sharp; queued cards dim, blur, and shrink.
        Center padding = half the card width per breakpoint, so the active card sits centered. -->
   <div
     id="gallery-track"
+    role="region"
+    aria-label={g.title}
     class="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-8rem)] pb-3 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:gap-6 sm:px-[calc(50%-10rem)] lg:px-[calc(50%-12rem)] [&::-webkit-scrollbar]:hidden"
   >
     {photos.map((p, i) => (
@@ -43,11 +45,12 @@ const photos = g.photos
           class="aspect-[3/4] w-64 rounded-xl object-cover shadow-md ring-1 ring-ink/10 sm:w-80 lg:w-96"
         />
         {/* Text overlay — follows the site language; replaces the burnt-in poster text once
-            the plain (text-free) renders are swapped in. Light ink for the current dark art. */}
-        <figcaption class="pointer-events-none absolute inset-x-0 top-0 rounded-t-xl p-5 sm:p-6">
-          <p class="font-mono text-[11px] tracking-wider text-white/60">{String(i + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}</p>
-          <h3 class="mt-1.5 font-serif text-2xl font-medium tracking-tight text-white sm:text-3xl">{p.title}</h3>
-          <p class="mt-1 text-sm/6 text-white/70">{p.sub}</p>
+            the plain (text-free) renders are swapped in. The gradient scrim keeps the white
+            text legible over any artwork, light or dark. */}
+        <figcaption class="pointer-events-none absolute inset-x-0 top-0 rounded-t-xl bg-gradient-to-b from-black/50 via-black/20 to-transparent p-5 sm:p-6">
+          <p class="font-mono text-[11px] tracking-wider text-white/70">{String(i + 1).padStart(2, '0')} / {String(photos.length).padStart(2, '0')}</p>
+          <h3 class="mt-1.5 font-serif text-2xl font-medium tracking-tight text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.4)] sm:text-3xl">{p.title}</h3>
+          <p class="mt-1 text-sm/6 text-white/80 [text-shadow:0_1px_2px_rgb(0_0_0/0.4)]">{p.sub}</p>
         </figcaption>
       </figure>
     ))}

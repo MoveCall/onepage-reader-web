@@ -5,8 +5,11 @@ import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
+  /** Override the language-switch target. 404 has no /zh counterpart, so it sends you home
+      instead of linking a /zh/404/ that never renders (an infinite same-page loop). */
+  switchHrefOverride?: string;
 }
-const { lang } = Astro.props;
+const { lang, switchHrefOverride } = Astro.props;
 const t = ui[lang].nav;
 
 const GITHUB_URL = 'https://github.com/MoveCall/onepage-reader-web';
@@ -20,8 +23,8 @@ const logPath = localizedPath('/log', lang);
 const base = import.meta.env.BASE_URL;
 let logical = Astro.url.pathname;
 if (logical.startsWith(base)) logical = '/' + logical.slice(base.length);
-logical = logical.replace(/^\/zh/, '') || '/';
-const switchHref = localizedPath(logical, otherLang);
+logical = logical.replace(/^\/zh(?=\/|$)/, '') || '/';
+const switchHref = switchHrefOverride ?? localizedPath(logical, otherLang);
 ---
 
 <div id="nav-top" aria-hidden="true"></div>
