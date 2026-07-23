@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://movecall.github.io/onepage-reader-web/sitemap-index.xml

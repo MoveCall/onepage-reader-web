@@ -13,7 +13,7 @@
 import { createServer } from 'node:https';
 import { readFile } from 'node:fs/promises';
 import { createReadStream, existsSync } from 'node:fs';
-import { extname, join, normalize } from 'node:path';
+import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 
@@ -51,7 +51,7 @@ createServer({ cert, key }, (req, res) => {
 
   let urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
   let filePath = normalize(join(ROOT, urlPath));
-  if (!filePath.startsWith(ROOT)) { res.writeHead(403).end('Forbidden'); return; }
+  if (!filePath.startsWith(ROOT + sep) && filePath !== ROOT) { res.writeHead(403).end('Forbidden'); return; }
   if (urlPath.endsWith('/') || !extname(filePath)) {
     const idx = join(filePath, 'index.html');
     if (existsSync(idx)) filePath = idx;

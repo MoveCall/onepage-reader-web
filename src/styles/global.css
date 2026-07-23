@@ -5,7 +5,7 @@
    monospace for structure & captions, paper + ink, with a single restrained
    ink-red accent. Hairline rules instead of cards. */
 @theme {
-  --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Lora", "Noto Serif SC", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
