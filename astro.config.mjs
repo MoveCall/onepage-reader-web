@@ -9,7 +9,7 @@ export default defineConfig({
   // Rename the repo? change `base` below to '/<new-repo-name>/' and rebuild — that's the only spot.
   site: 'https://movecall.github.io',
   base: '/onepage-reader-web/',
-  integrations: [sitemap()],
+  integrations: [sitemap({ i18n: { defaultLocale: 'en', locales: { en: 'en', zh: 'zh' } } })],
   i18n: {
     locales: ['en', 'zh'],
     defaultLocale: 'en',

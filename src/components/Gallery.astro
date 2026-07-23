@@ -201,17 +201,22 @@ const photos = g.photos
       dot.addEventListener('click', function () { goTo(i, true); });
     });
 
-    var hovering = false, inView = false, wasPaused = true;
+    var hovering = false, focused = false, inView = false, wasPaused = true;
     function apply() {
-      var paused = !inView || hovering || document.hidden;
+      var paused = !inView || hovering || focused || document.hidden;
       dotsWrap.classList.toggle('is-visible', inView);
       dotsWrap.classList.toggle('paused', paused);
       if (wasPaused && !paused) armWatchdog();
       wasPaused = paused;
     }
-    // Pause only while hovering the dots — images keep auto-advancing.
+    // Pause on hover of the dots — images keep auto-advancing.
     dotsWrap.addEventListener('pointerenter', function () { hovering = true; apply(); });
     dotsWrap.addEventListener('pointerleave', function () { hovering = false; apply(); });
+    // Pause while keyboard focus is anywhere in the gallery (WCAG 2.2.2 — user can stop it).
+    section.addEventListener('focusin', function () { focused = true; apply(); });
+    section.addEventListener('focusout', function (e) {
+      if (!section.contains(e.relatedTarget)) { focused = false; apply(); }
+    });
     document.addEventListener('visibilitychange', apply);
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) { inView = entries[0].isIntersecting; apply(); }, { threshold: 0.2 }).observe(section);
