@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Firmware from '../components/Firmware.astro';
+import Footer from '../components/Footer.astro';
+
+const lang = 'en';
+---
+
+<Layout
+  lang={lang}
+  title="Firmware — OnePage · 壹頁"
+  description="Flash OnePage onto your ESP32-C61 reader — straight from the browser over USB, or download the image and flash it with esptool."
+>
+  <Nav lang={lang} />
+  <main>
+    <Firmware lang={lang} />
+  </main>
+  <Footer lang={lang} showAbout={false} />
+</Layout>

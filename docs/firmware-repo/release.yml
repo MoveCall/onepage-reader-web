@@ -1,0 +1,57 @@
+# Drop this into the FIRMWARE repo (MoveCall/crosspoint-onepage) at
+#   .github/workflows/release.yml
+#
+# On pushing a version tag (v*), it builds the firmware, merges it into a single
+# flashable image named with the version, generates the esp-web-tools manifest,
+# and publishes both as assets on a GitHub Release. The website's firmware page
+# reads releases/latest/download/manifest.json and needs no changes per release.
+#
+# TODO(firmware repo): confirm IDF_TARGET and the merge inputs below match the
+# project (paths under build/ are produced by `idf.py build`).
+
+name: Release firmware
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Build with ESP-IDF. Pin to the IDF version the project uses.
+      - name: Build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: release-v5.5   # TODO: match project
+          target: esp32c61
+          command: idf.py build
+
+      - name: Merge into a single flash image
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME}"
+          BIN="onepage-firmware-${VERSION}.bin"
+          # flasher_args.json (in build/) lists every part and its offset; merge_bin
+          # reads it so the result is a full 0x0 image esp-web-tools can flash in one part.
+          python -m esptool --chip esp32c61 merge_bin \
+            -o "${BIN}" \
+            @build/flash_args
+          echo "BIN=${BIN}" >> "$GITHUB_ENV"
+
+      - name: Generate manifest.json
+        run: node .github/gen-manifest.mjs --version "${GITHUB_REF_NAME}" --bin "${BIN}"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ env.BIN }}
+            manifest.json

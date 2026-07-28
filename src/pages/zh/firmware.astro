@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Firmware from '../../components/Firmware.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'zh';
+---
+
+<Layout
+  lang={lang}
+  title="固件 — 壹頁 · OnePage"
+  description="把 OnePage 烧进你的 ESP32-C61 阅读器 —— 用 USB 直接在浏览器里烧，或下载镜像用 esptool 烧。"
+>
+  <Nav lang={lang} />
+  <main>
+    <Firmware lang={lang} />
+  </main>
+  <Footer lang={lang} showAbout={false} />
+</Layout>

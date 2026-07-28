@@ -16,6 +16,21 @@ type Feature = {
 
 type LogEntry = { when: string; title: string; body: string; tag: string };
 
+type FirmwareContent = {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  // Browser (Web Serial) flow
+  webTitle: string;
+  webLede: string;
+  connectBtn: string;
+  browserNote: string;
+  unsupported: string;
+  // Shared safety notes
+  notesTitle: string;
+  notes: string[];
+};
+
 type FontsContent = {
   eyebrow: string;
   title: string;
@@ -55,6 +70,7 @@ type Content = {
   nav: {
     features: string;
     notes: string;
+    firmware: string;
     fontTool: string;
     github: string;
   };
@@ -110,6 +126,7 @@ type Content = {
     photos: { src: string; alt: string; title: string; sub: string }[];
   };
   fonts: FontsContent;
+  firmware: FirmwareContent;
 };
 
 export const ui: Record<Lang, Content> = {
@@ -117,6 +134,7 @@ export const ui: Record<Lang, Content> = {
     nav: {
       features: 'The build',
       notes: 'Log',
+      firmware: 'Firmware',
       fontTool: 'Font Tool',
       github: 'GitHub',
     },
@@ -342,11 +360,28 @@ export const ui: Record<Lang, Content> = {
       errNoFont: 'Please choose at least a Regular font file.',
       errFailed: 'Could not trim that file — it may be an unsupported or broken font.',
     },
+    firmware: {
+      eyebrow: 'Firmware',
+      title: 'Flash OnePage onto your device.',
+      lede: 'OnePage runs my port of CrossPoint. Plug the reader in over USB and flash the latest build straight from this page — no tools to install.',
+      webTitle: 'Flash from the browser',
+      webLede: 'Plug the reader in over USB, then connect and flash. Works in Chrome, Edge, and other Chromium browsers that support Web Serial.',
+      connectBtn: 'Connect & flash',
+      browserNote: 'Your browser talks to the chip directly — nothing is uploaded to a server.',
+      unsupported: 'This browser can’t flash over USB (no Web Serial). Use Chrome or Edge on desktop.',
+      notesTitle: 'Before you flash',
+      notes: [
+        'This replaces whatever firmware is currently on the device. Your books and settings live on the SD card and are untouched.',
+        'If the flash fails, hold the BOOT key while plugging in to force download mode, then retry.',
+        'A wrong-chip image won’t brick the board — it just won’t boot. Reflash the correct one.',
+      ],
+    },
   },
   zh: {
     nav: {
       features: '在做什么',
       notes: '手记',
+      firmware: '固件',
       fontTool: '字体工具',
       github: 'GitHub',
     },
@@ -571,6 +606,22 @@ export const ui: Record<Lang, Content> = {
       ],
       errNoFont: '请至少选择一个 Regular 字体文件。',
       errFailed: '无法瘦身该文件 —— 可能是不支持或损坏的字体。',
+    },
+    firmware: {
+      eyebrow: '固件',
+      title: '把 OnePage 烧进你的设备。',
+      lede: 'OnePage 跑的是我移植的 CrossPoint。用 USB 接上阅读器，直接在这个页面烧最新固件 —— 不用装任何工具。',
+      webTitle: '浏览器直接烧录',
+      webLede: '用 USB 把阅读器接上，然后点连接并烧录。支持 Web Serial 的浏览器（Chrome、Edge 等 Chromium 内核）可用。',
+      connectBtn: '连接并烧录',
+      browserNote: '浏览器直接和芯片通信 —— 不会上传到任何服务器。',
+      unsupported: '当前浏览器不支持 USB 烧录（无 Web Serial）。请在桌面版 Chrome / Edge 使用。',
+      notesTitle: '烧录前须知',
+      notes: [
+        '这会覆盖设备上现有的固件。你的书和设置都在 SD 卡里，不受影响。',
+        '烧录失败的话，插入时按住 BOOT 键强制进入下载模式，再重试。',
+        '烧错芯片的镜像不会变砖 —— 只是开不了机，重新烧对的即可。',
+      ],
     },
   },
 };

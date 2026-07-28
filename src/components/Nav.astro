@@ -17,6 +17,7 @@ const otherLang: Lang = lang === 'en' ? 'zh' : 'en';
 const otherLabel = lang === 'en' ? '中文' : 'EN';
 const home = localizedPath('/', lang);
 const fontsPath = localizedPath('/fonts', lang);
+const firmwarePath = localizedPath('/firmware', lang);
 const logPath = localizedPath('/log', lang);
 
 // Same page in the other language — strip the base prefix and locale, then rebuild.
@@ -38,6 +39,7 @@ const switchHref = switchHrefOverride ?? localizedPath(logical, otherLang);
     <div class="flex items-center gap-x-1 font-mono text-[13px] sm:gap-x-3">
       <a href={`${home}#features`} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.features}</a>
       <a href={logPath} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.notes}</a>
+      <a href={firmwarePath} class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.firmware}</a>
       <a href={fontsPath} class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.fontTool}</a>
       <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.github}</a>
       <a

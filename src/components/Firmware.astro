@@ -1,0 +1,65 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const f = ui[lang].firmware;
+
+// The manifest AND the .bin both live on the firmware repo's latest Release
+// (MoveCall/crosspoint-onepage). Its release workflow generates manifest.json
+// per build — pinning that build's versioned .bin filename — so this website
+// never changes when firmware ships. esptool-js recognises ESP32-C61
+// (magic 0x4f81606f → ESP32C61ROM); the generated manifest sets
+// chipFamily "ESP32-C61". See docs/firmware-hosting.md.
+// GitHub release assets are served with permissive CORS, so this cross-origin
+// fetch works from the Pages origin.
+const MANIFEST_URL = 'https://github.com/MoveCall/crosspoint-onepage/releases/latest/download/manifest.json';
+---
+
+<section class="py-12 sm:py-16">
+  <div class="mx-auto max-w-3xl px-6">
+    <p class="font-mono text-xs tracking-wider text-accent-600 uppercase">{f.eyebrow}</p>
+    <h1 class="mt-3 font-serif text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl">{f.title}</h1>
+    <p class="mt-4 max-w-[60ch] text-base/7 text-pretty text-ink/70">{f.lede}</p>
+
+    {/* ── Browser flash (Web Serial via esp-web-tools) ───────────────────── */}
+    <div class="mt-12 rounded-xl border border-ink/12 bg-surface p-6 sm:p-8">
+      <h2 class="font-serif text-xl font-medium tracking-tight text-ink">{f.webTitle}</h2>
+      <p class="mt-2 max-w-[56ch] text-sm/6 text-ink/65">{f.webLede}</p>
+
+      <div class="mt-6">
+        <esp-web-install-button manifest={MANIFEST_URL}>
+          <button
+            slot="activate"
+            type="button"
+            class="rounded-full bg-accent-600 px-5 py-2.5 font-mono text-sm font-medium text-paper no-underline transition hover:bg-accent-700"
+          >{f.connectBtn}</button>
+          <span slot="unsupported" class="block max-w-[56ch] text-sm/6 text-accent-700">{f.unsupported}</span>
+          <span slot="not-allowed" class="block max-w-[56ch] text-sm/6 text-accent-700">{f.unsupported}</span>
+        </esp-web-install-button>
+      </div>
+
+      <p class="mt-4 font-mono text-xs text-ink/45">{f.browserNote}</p>
+    </div>
+
+    {/* ── Safety notes ───────────────────────────────────────────────────── */}
+    <div class="mt-10">
+      <h2 class="font-mono text-sm font-medium tracking-wider text-ink/80 uppercase">{f.notesTitle}</h2>
+      <ul class="mt-4 space-y-3">
+        {f.notes.map((n) => (
+          <li class="flex gap-3 text-sm/6 text-ink/65">
+            <span class="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent-500" aria-hidden="true"></span>
+            <span class="max-w-[62ch]">{n}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{/* esp-web-tools provides <esp-web-install-button>; it self-detects Web Serial support
+    and renders the `unsupported`/`not-allowed` slots when the browser can't flash. */}
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
