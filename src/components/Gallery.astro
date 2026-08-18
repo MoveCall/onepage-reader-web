@@ -10,7 +10,7 @@ const { lang } = Astro.props;
 const g = ui[lang].gallery;
 
 // Optimized (webp + srcset) gallery images from src/assets, matched to the i18n alt text by filename.
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.JPG', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/gallery/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', { eager: true });
 const byName: Record<string, ImageMetadata> = {};
 for (const path in files) byName[path.split('/').pop()!] = files[path].default;
 const photos = g.photos

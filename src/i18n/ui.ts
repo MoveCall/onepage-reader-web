@@ -26,6 +26,16 @@ type FirmwareContent = {
   connectBtn: string;
   browserNote: string;
   unsupported: string;
+  // Live flash status (both paths)
+  connecting: string;
+  flashing: string;
+  flashDone: string;
+  flashErr: string;
+  noSerial: string;
+  // Fallback no-stub path
+  altTitle: string;
+  altLede: string;
+  altBtn: string;
   // Shared safety notes
   notesTitle: string;
   notes: string[];
@@ -297,11 +307,11 @@ export const ui: Record<Lang, Content> = {
       title: 'A first look at the design.',
       dotLabel: 'View photo',
       photos: [
-        { src: '/gallery/IMG_0397.JPG', alt: 'OnePage — seen edge-on', title: 'Genuinely thin', sub: 'Seen edge-on' },
-        { src: '/gallery/IMG_0398.JPG', alt: 'OnePage — top bezel', title: 'The top quarter', sub: 'Bezels pulled in tight' },
-        { src: '/gallery/IMG_0399.JPG', alt: 'OnePage — bottom at 45°', title: 'Bottom, at 45°', sub: 'Keys and ports, all in a row' },
-        { src: '/gallery/IMG_0400.JPG', alt: 'OnePage — wake key', title: 'The wake key', sub: 'Restrained, but easy to reach' },
-        { src: '/gallery/IMG_0401.JPG', alt: 'OnePage — microSD slot', title: 'A little surprise', sub: 'The microSD slot has a face' },
+        { src: '/gallery/OnePage-3D-a1.jpg', alt: 'OnePage — seen edge-on', title: 'Genuinely thin', sub: 'Seen edge-on' },
+        { src: '/gallery/OnePage-3D-a2.jpg', alt: 'OnePage — top bezel', title: 'The top quarter', sub: 'Bezels pulled in tight' },
+        { src: '/gallery/OnePage-3D-a3.jpg', alt: 'OnePage — bottom at 45°', title: 'Bottom, at 45°', sub: 'Keys and ports, all in a row' },
+        { src: '/gallery/OnePage-3D-a4.jpg', alt: 'OnePage — wake key', title: 'The wake key', sub: 'Restrained, but easy to reach' },
+        { src: '/gallery/OnePage-3D-a5.jpg', alt: 'OnePage — microSD slot', title: 'A little surprise', sub: 'The microSD slot has a face' },
       ],
     },
     fonts: {
@@ -369,6 +379,14 @@ export const ui: Record<Lang, Content> = {
       connectBtn: 'Connect & flash',
       browserNote: 'Your browser talks to the chip directly — nothing is uploaded to a server.',
       unsupported: 'This browser can’t flash over USB (no Web Serial). Use Chrome or Edge on desktop.',
+      connecting: 'Connecting — pick your device’s serial port…',
+      flashing: 'Flashing… keep the cable connected.',
+      flashDone: 'Done. The reader is rebooting into the new firmware.',
+      flashErr: 'Flash failed. Check the cable, or hold BOOT while connecting, then retry.',
+      noSerial: 'This browser has no Web Serial. Use Chrome or Edge on desktop.',
+      altTitle: 'Flash won’t start?',
+      altLede: 'If connecting fails with “Failed to initialize”, try the slower fallback — it flashes through the chip’s ROM loader instead of the fast stub.',
+      altBtn: 'Flash (slow, fallback)',
       notesTitle: 'Before you flash',
       notes: [
         'This replaces whatever firmware is currently on the device. Your books and settings live on the SD card and are untouched.',
@@ -544,11 +562,11 @@ export const ui: Record<Lang, Content> = {
       title: '先看看它的样子。',
       dotLabel: '查看照片',
       photos: [
-        { src: '/gallery/IMG_0397.JPG', alt: '壹頁 —— 侧面', title: '它真的很薄', sub: '立起来给你看' },
-        { src: '/gallery/IMG_0398.JPG', alt: '壹頁 —— 上边框', title: '上方那 1/4', sub: '边框收得很窄' },
-        { src: '/gallery/IMG_0399.JPG', alt: '壹頁 —— 底部 45°', title: '底部 45° 视角', sub: '三段式按键和接口，一排排开' },
-        { src: '/gallery/IMG_0400.JPG', alt: '壹頁 —— 唤醒键', title: '唤醒键特写', sub: '克制，但顺手' },
-        { src: '/gallery/IMG_0401.JPG', alt: '壹頁 —— microSD 卡槽', title: '意外惊喜', sub: 'micro SD 那块，长了一张脸' },
+        { src: '/gallery/OnePage-3D-a1.jpg', alt: '壹頁 —— 侧面', title: '它真的很薄', sub: '立起来给你看' },
+        { src: '/gallery/OnePage-3D-a2.jpg', alt: '壹頁 —— 上边框', title: '上方那 1/4', sub: '边框收得很窄' },
+        { src: '/gallery/OnePage-3D-a3.jpg', alt: '壹頁 —— 底部 45°', title: '底部 45° 视角', sub: '三段式按键和接口，一排排开' },
+        { src: '/gallery/OnePage-3D-a4.jpg', alt: '壹頁 —— 唤醒键', title: '唤醒键特写', sub: '克制，但顺手' },
+        { src: '/gallery/OnePage-3D-a5.jpg', alt: '壹頁 —— microSD 卡槽', title: '意外惊喜', sub: 'micro SD 那块，长了一张脸' },
       ],
     },
     fonts: {
@@ -616,6 +634,14 @@ export const ui: Record<Lang, Content> = {
       connectBtn: '连接并烧录',
       browserNote: '浏览器直接和芯片通信 —— 不会上传到任何服务器。',
       unsupported: '当前浏览器不支持 USB 烧录（无 Web Serial）。请在桌面版 Chrome / Edge 使用。',
+      connecting: '连接中 —— 请选择设备对应的串口…',
+      flashing: '烧录中…… 请保持数据线连接。',
+      flashDone: '完成。阅读器正在重启进入新固件。',
+      flashErr: '烧录失败。检查数据线，或按住 BOOT 再连接，然后重试。',
+      noSerial: '此浏览器不支持 Web Serial。请用桌面版 Chrome / Edge。',
+      altTitle: '烧录起不来？',
+      altLede: '如果连接时报 “Failed to initialize”，试试较慢的备用方式 —— 它绕过高速 stub，直接用芯片的 ROM 引导器烧。',
+      altBtn: '慢速烧录（备用）',
       notesTitle: '烧录前须知',
       notes: [
         '这会覆盖设备上现有的固件。你的书和设置都在 SD 卡里，不受影响。',

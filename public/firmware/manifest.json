@@ -1,0 +1,13 @@
+{
+  "name": "OnePage",
+  "version": "0.1.0",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C61",
+      "parts": [
+        { "path": "onepage-firmware-v0.1.0.bin", "offset": 0 }
+      ]
+    }
+  ]
+}
