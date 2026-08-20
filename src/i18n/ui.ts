@@ -26,16 +26,13 @@ type FirmwareContent = {
   connectBtn: string;
   browserNote: string;
   unsupported: string;
-  // Live flash status (both paths)
+  // Live flash status
   connecting: string;
   flashing: string;
   flashDone: string;
   flashErr: string;
   noSerial: string;
-  // Fallback no-stub path
-  altTitle: string;
-  altLede: string;
-  altBtn: string;
+  logTitle: string;
   // Shared safety notes
   notesTitle: string;
   notes: string[];
@@ -382,15 +379,14 @@ export const ui: Record<Lang, Content> = {
       connecting: 'Connecting — pick your device’s serial port…',
       flashing: 'Flashing… keep the cable connected.',
       flashDone: 'Done. The reader is rebooting into the new firmware.',
-      flashErr: 'Flash failed. Check the cable, or hold BOOT while connecting, then retry.',
+      flashErr: 'Flash failed. Check the cable, or hold Next Page and press Reset to retry.',
       noSerial: 'This browser has no Web Serial. Use Chrome or Edge on desktop.',
-      altTitle: 'Flash won’t start?',
-      altLede: 'If connecting fails with “Failed to initialize”, try the slower fallback — it flashes through the chip’s ROM loader instead of the fast stub.',
-      altBtn: 'Flash (slow, fallback)',
+      logTitle: 'Flash log',
       notesTitle: 'Before you flash',
       notes: [
+        'Wake the device from sleep before flashing.',
         'This replaces whatever firmware is currently on the device. Your books and settings live on the SD card and are untouched.',
-        'If the flash fails, hold the BOOT key while plugging in to force download mode, then retry.',
+        'If the flash fails, hold the Next Page button, short-press Reset once, then release the Reset button first to force download mode, and retry.',
         'A wrong-chip image won’t brick the board — it just won’t boot. Reflash the correct one.',
       ],
     },
@@ -637,15 +633,14 @@ export const ui: Record<Lang, Content> = {
       connecting: '连接中 —— 请选择设备对应的串口…',
       flashing: '烧录中…… 请保持数据线连接。',
       flashDone: '完成。阅读器正在重启进入新固件。',
-      flashErr: '烧录失败。检查数据线，或按住 BOOT 再连接，然后重试。',
+      flashErr: '烧录失败。检查数据线，或按住下一页键并短按 Reset 重试。',
       noSerial: '此浏览器不支持 Web Serial。请用桌面版 Chrome / Edge。',
-      altTitle: '烧录起不来？',
-      altLede: '如果连接时报 “Failed to initialize”，试试较慢的备用方式 —— 它绕过高速 stub，直接用芯片的 ROM 引导器烧。',
-      altBtn: '慢速烧录（备用）',
+      logTitle: '烧录日志',
       notesTitle: '烧录前须知',
       notes: [
+        '请退出休眠状态下烧录固件。',
         '这会覆盖设备上现有的固件。你的书和设置都在 SD 卡里，不受影响。',
-        '烧录失败的话，插入时按住 BOOT 键强制进入下载模式，再重试。',
+        '烧录失败的话，按住下一页按键，短按一次 Reset，随后先松开 Reset 键强制进入下载模式，再重试。',
         '烧错芯片的镜像不会变砖 —— 只是开不了机，重新烧对的即可。',
       ],
     },

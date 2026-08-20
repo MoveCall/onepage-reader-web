@@ -9,7 +9,15 @@ interface Props {
 const { class: cls = 'h-7 w-auto' } = Astro.props;
 ---
 
-<svg viewBox="0 0 180 253" fill="none" class:list={['text-ink', cls]} role="img" aria-label="OnePage 壹頁">
+<svg
+  viewBox="0 0 180 253"
+  width="20"
+  height="28"
+  fill="none"
+  class:list={['shrink-0 text-ink', cls]}
+  role="img"
+  aria-label="OnePage 壹頁"
+>
   <g stroke="currentColor" fill="currentColor" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round">
     <!-- document outline: rounded TL/BR/BL corners; top-right cut by the fold crease -->
     <path

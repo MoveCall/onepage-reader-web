@@ -53,21 +53,18 @@ const t = {
         <p id="fwProgressText" class="mt-2 font-mono text-xs text-ink/55"></p>
       </div>
 
+      <details id="fwLogPanel" class="mt-3 hidden text-right">
+        <summary class="inline cursor-pointer select-none list-none font-mono text-[10px] text-ink/30 transition hover:text-ink/55 [&::-webkit-details-marker]:hidden">
+          {f.logTitle}
+        </summary>
+        <pre
+          id="fwLog"
+          class="mt-2 max-h-44 overflow-auto rounded border border-ink/8 bg-ink/[0.025] p-2 text-left font-mono text-[10px]/5 whitespace-pre-wrap text-ink/45"
+        ></pre>
+      </details>
+
       <p class="mt-4 font-mono text-xs text-ink/45">{f.browserNote}</p>
       <p id="fwUnsupported" class="mt-3 hidden max-w-[56ch] text-sm/6 text-accent-700">{f.unsupported}</p>
-    </div>
-
-    {/* ── Fallback: no-stub (slow) ───────────────────────────────────────── */}
-    <div class="mt-8 rounded-xl border border-ink/12 p-6 sm:p-8">
-      <h2 class="font-serif text-xl font-medium tracking-tight text-ink">{f.altTitle}</h2>
-      <p class="mt-2 max-w-[56ch] text-sm/6 text-ink/65">{f.altLede}</p>
-      <div class="mt-6">
-        <button
-          id="fwFlashNoStub"
-          type="button"
-          class="rounded-full border border-ink/20 px-5 py-2.5 font-mono text-sm font-medium text-ink/85 transition hover:border-ink/40 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-        >{f.altBtn}</button>
-      </div>
     </div>
 
     {/* ── Safety notes ───────────────────────────────────────────────────── */}
@@ -93,17 +90,17 @@ const t = {
     const T = JSON.parse(section.getAttribute('data-fw') || '{}');
     const $ = (id: string) => document.getElementById(id);
     const btnStub = $('fwFlash') as HTMLButtonElement | null;
-    const btnNoStub = $('fwFlashNoStub') as HTMLButtonElement | null;
     const wrap = $('fwProgressWrap');
     const bar = $('fwProgressBar');
     const text = $('fwProgressText');
+    const logPanel = $('fwLogPanel') as HTMLDetailsElement | null;
+    const log = $('fwLog');
     const unsupported = $('fwUnsupported');
 
     // No Web Serial → disable the buttons and show the notice up front.
     if (!('serial' in navigator)) {
       unsupported?.classList.remove('hidden');
       if (btnStub) btnStub.disabled = true;
-      if (btnNoStub) btnNoStub.disabled = true;
     }
 
     const setStatus = (msg: string) => {
@@ -112,33 +109,53 @@ const t = {
     const setProgress = (pct: number) => {
       if (bar) bar.style.width = pct + '%';
     };
+    const appendLog = (msg: string) => {
+      if (!log) return;
+      logPanel?.classList.remove('hidden');
+      const time = new Date().toLocaleTimeString();
+      log.textContent += `[${time}] ${msg}\n`;
+      log.scrollTop = log.scrollHeight;
+    };
 
     async function resolveBin(): Promise<{ url: string; offset: number }> {
       // Manifest is same-origin; its part path is relative to the manifest URL.
       const manifestUrl = new URL(T.manifestUrl, location.href);
+      appendLog(`Loading manifest: ${manifestUrl.href}`);
       const manifest = await (await fetch(manifestUrl)).json();
       const part = manifest.builds[0].parts[0];
-      return { url: new URL(part.path, manifestUrl).href, offset: part.offset };
+      const url = new URL(part.path, manifestUrl).href;
+      appendLog(`Firmware image: ${url} @ 0x${Number(part.offset).toString(16)}`);
+      return { url, offset: part.offset };
     }
 
-    async function run(noStub: boolean) {
+    async function run() {
       wrap?.classList.remove('hidden');
+      if (log) {
+        log.textContent = '';
+      }
+      if (logPanel) {
+        logPanel.open = false;
+        logPanel.classList.add('hidden');
+      }
       setProgress(0);
       setStatus(T.connecting);
       if (btnStub) btnStub.disabled = true;
-      if (btnNoStub) btnNoStub.disabled = true;
       try {
         const { url, offset } = await resolveBin();
+        let isWriting = false;
         await flash({
           binUrl: url,
           offset,
-          noStub,
           onProgress: (written, total) => {
+            isWriting = true;
             const pct = total ? Math.round((written / total) * 100) : 0;
             setProgress(pct);
             setStatus(`${T.flashing} ${pct}%`);
           },
-          onLog: (msg) => setStatus(msg),
+          onLog: (msg) => {
+            appendLog(msg);
+            if (!isWriting) setStatus(msg);
+          },
         });
         setProgress(100);
         setStatus('✓ ' + T.flashDone);
@@ -149,15 +166,15 @@ const t = {
           // User dismissed the port picker — quietly reset.
           wrap?.classList.add('hidden');
         } else {
+          appendLog(`ERROR: ${(err as Error).message}`);
+          if (logPanel) logPanel.open = true;
           setStatus(T.flashErr + ' (' + (err as Error).message + ')');
         }
       } finally {
         if (btnStub) btnStub.disabled = false;
-        if (btnNoStub) btnNoStub.disabled = false;
       }
     }
 
-    btnStub?.addEventListener('click', () => run(false));
-    btnNoStub?.addEventListener('click', () => run(true));
+    btnStub?.addEventListener('click', () => run());
   }
 </script>
