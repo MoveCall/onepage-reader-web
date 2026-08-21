@@ -45,31 +45,38 @@ type FontsContent = {
   familyLabel: string;
   familyHint: string;
   familyPlaceholder: string;
+  sizesLabel: string;
+  sizesHint: string;
   facesLabel: string;
   facesHint: string;
   styles: { regular: string; bold: string; italic: string; bolditalic: string };
+  fallbacksLabel: string;
+  fallbacksHint: string;
+  fallback1: string;
+  fallback2: string;
   required: string;
   optional: string;
   coverageLabel: string;
   coverageHint: string;
   presetNames: Record<string, string>;
-  presetHints: Record<string, string>;
-  extraLabel: string;
-  extraHint: string;
-  extraPlaceholder: string;
   customLabel: string;
   customHint: string;
-  dropHints: string;
-  dropHintsHint: string;
   buildBtn: string;
+  cancelBtn: string;
   building: string;
+  cancelled: string;
+  complete: string;
+  progressLabel: string;
+  logTitle: string;
   resultsTitle: string;
   downloadAll: string;
   download: string;
-  saved: string;
   installTitle: string;
   installSteps: string[];
   errNoFont: string;
+  errFileType: string;
+  errTooLarge: string;
+  errOom: string;
   errFailed: string;
 };
 
@@ -313,59 +320,70 @@ export const ui: Record<Lang, Content> = {
     },
     fonts: {
       eyebrow: 'Font tool',
-      title: 'Trim a font down for the SD card.',
-      lede: 'OnePage reads TTF/OTF fonts straight from the SD card — but a full CJK font is 10–16 MB. This trims one down to just the characters you need, right here in your browser. Nothing is uploaded.',
-      familyLabel: 'Output name',
-      familyHint: 'Used for the downloaded filename. Letters, numbers, and dashes.',
-      familyPlaceholder: 'e.g. LXGW WenKai',
-      facesLabel: 'Font files',
-      facesHint: 'Regular is required; the other styles are optional and get the same coverage.',
+      title: 'Build fonts for OnePage.',
+      lede: 'Build CrossPoint-compatible .cpfont files for OnePage, entirely in your browser. Your source fonts never leave this device.',
+      familyLabel: 'Font family',
+      familyHint: 'Used for the output folder and filenames. Use ASCII letters, numbers, underscores, or hyphens.',
+      familyPlaceholder: 'e.g. LXGW_WenKai',
+      sizesLabel: 'Font sizes',
+      sizesHint: 'Comma-separated point sizes from 6 to 48. CJK coverage also adds firmware UI sizes 8 and 10.',
+      facesLabel: 'Style fonts',
+      facesHint: 'Choose TTF or OTF files. Regular is required; each selected style is stored in every output.',
       styles: { regular: 'Regular', bold: 'Bold', italic: 'Italic', bolditalic: 'Bold Italic' },
+      fallbacksLabel: 'Regular fallbacks',
+      fallbacksHint: 'Optional TTF/OTF fonts used in order when a glyph is missing from a style font.',
+      fallback1: 'Fallback 1',
+      fallback2: 'Fallback 2',
       required: 'required',
       optional: 'optional',
       coverageLabel: 'Character coverage',
-      coverageHint: 'Pick what your books need. More coverage = larger file. Base Latin and common punctuation are always kept.',
+      coverageHint: 'Choose the official CrossPoint sets you need. Base ASCII, common punctuation, and U+FFFD are always included.',
       presetNames: {
-        'chinese-full': 'Chinese · GB2312 (6763)',
-        'chinese-l1': 'Chinese · common (3755)',
-        'cjk-punct': 'CJK punctuation & full-width',
-        'cjk-all': 'All CJK ideographs',
+        reading: 'Reading',
+        default: 'Default multilingual',
         'latin-ext': 'Latin Extended',
         greek: 'Greek',
         cyrillic: 'Cyrillic',
-        symbols: 'Symbols & arrows',
+        vietnamese: 'Vietnamese',
+        hebrew: 'Hebrew',
+        arabic: 'Arabic',
+        armenian: 'Armenian',
+        georgian: 'Georgian',
+        ethiopic: 'Ethiopic',
+        cherokee: 'Cherokee',
+        tifinagh: 'Tifinagh',
+        bengali: 'Bengali',
+        thai: 'Thai',
+        hangul: 'Korean (Hangul)',
+        'cjk-sc': 'Simplified Chinese',
+        'cjk-tc': 'Traditional Chinese',
+        'cjk-jp': 'Japanese',
+        symbols: 'Symbols',
+        'ipa-chars': 'IPA characters',
       },
-      presetHints: {
-        'chinese-full': 'Recommended for Chinese',
-        'chinese-l1': 'Smaller',
-        'cjk-all': '~20k glyphs, large',
-        'cjk-punct': '',
-        'latin-ext': '',
-        greek: '',
-        cyrillic: '',
-        symbols: '',
-      },
-      extraLabel: 'Extra characters to keep',
-      extraHint: 'Paste any text — every character in it is kept. Handy for a specific book or a name.',
-      extraPlaceholder: 'Paste text whose characters must be kept…',
       customLabel: 'Custom Unicode ranges',
-      customHint: 'Comma-separated hex ranges, e.g. (0x2900-0x29FF),(0x2E00-0x2EFF)',
-      dropHints: 'Drop hinting (smaller file)',
-      dropHintsHint: 'OnePage renders 1-bit at 219 DPI and benefits from hinting — leave this off unless size is critical.',
-      buildBtn: 'Trim font',
-      building: 'Trimming…',
-      resultsTitle: 'Trimmed files',
+      customHint: 'Optional strict ranges, comma-separated: (0x2900-0x29FF),(0x2E00-0x2EFF)',
+      buildBtn: 'Build .cpfont',
+      cancelBtn: 'Cancel',
+      building: 'Building fonts…',
+      cancelled: 'Build cancelled.',
+      complete: 'Build complete.',
+      progressLabel: 'Font build progress',
+      logTitle: 'Build details',
+      resultsTitle: 'Generated files',
       downloadAll: 'Download all (.zip)',
       download: 'Download',
-      saved: 'saved',
       installTitle: 'How to install',
       installSteps: [
-        'Download the trimmed font file (or the zip).',
-        'Copy it to your SD card under /fonts/ (create the folder if needed).',
-        'Pop the card back in — the font shows up in the reader’s font settings.',
+        'Keep the generated names in the form <Family>_<size>.cpfont.',
+        'Place the files under /.fonts/<Family>/ or /fonts/<Family>/ on the SD card.',
+        'Reboot OnePage or rescan fonts, then select the family in the reader.',
       ],
-      errNoFont: 'Please choose at least a Regular font file.',
-      errFailed: 'Could not trim that file — it may be an unsupported or broken font.',
+      errNoFont: 'Choose a Regular TTF or OTF font first.',
+      errFileType: 'Only TTF and OTF source fonts are supported in this release.',
+      errTooLarge: 'Selected source fonts exceed the 128 MB limit.',
+      errOom: 'Not enough browser memory. Try fewer character sets, font sizes, or styles.',
+      errFailed: 'Could not build the font.',
     },
     firmware: {
       eyebrow: 'Firmware',
@@ -567,59 +585,70 @@ export const ui: Record<Lang, Content> = {
     },
     fonts: {
       eyebrow: '字体工具',
-      title: '把字体瘦身后丢进 SD 卡。',
-      lede: 'OnePage 直接读 SD 卡里的 TTF/OTF 字体 —— 但一套完整中文字库有 10–16 MB。这个工具就在你浏览器里，把字体裁到只剩你需要的字。全程不上传。',
-      familyLabel: '输出名称',
-      familyHint: '用作下载文件名。字母、数字、连字符。',
-      familyPlaceholder: '例如 霞鹜文楷',
-      facesLabel: '字体文件',
-      facesHint: 'Regular 必填；其余字重可选，使用相同的字符覆盖。',
+      title: '生成 OnePage 字体。',
+      lede: '在浏览器里生成 OnePage 可直接读取的 CrossPoint .cpfont 字体。源字体始终留在你的设备上。',
+      familyLabel: '字体家族名',
+      familyHint: '用于输出目录和文件名，仅使用 ASCII 字母、数字、下划线或连字符。',
+      familyPlaceholder: '例如 LXGW_WenKai',
+      sizesLabel: '字体字号',
+      sizesHint: '输入 6–48 的整数，用英文逗号分隔。包含中日韩文字时会自动补充固件 UI 所需的 8、10 号。',
+      facesLabel: '字形字体',
+      facesHint: '请选择 TTF 或 OTF 文件。常规体必填；每个已选字形都会写入所有输出文件。',
       styles: { regular: '常规', bold: '粗体', italic: '斜体', bolditalic: '粗斜体' },
+      fallbacksLabel: '常规回退字体',
+      fallbacksHint: '可选；字形字体缺字时，会按顺序从这些 TTF/OTF 字体中查找。',
+      fallback1: '回退字体 1',
+      fallback2: '回退字体 2',
       required: '必填',
       optional: '可选',
       coverageLabel: '字符覆盖',
-      coverageHint: '按你的书需要勾选。覆盖越多，文件越大。基础拉丁字母和常用标点始终保留。',
+      coverageHint: '按需选择 CrossPoint 官方字符集。基础 ASCII、常用标点和 U+FFFD 始终包含。',
       presetNames: {
-        'chinese-full': '中文 · GB2312（6763）',
-        'chinese-l1': '中文 · 常用（3755）',
-        'cjk-punct': '中日韩标点 & 全角',
-        'cjk-all': '全部中日韩汉字',
+        reading: '阅读常用',
+        default: '默认多语言',
         'latin-ext': '拉丁扩展',
         greek: '希腊文',
         cyrillic: '西里尔文',
-        symbols: '符号 & 箭头',
+        vietnamese: '越南文',
+        hebrew: '希伯来文',
+        arabic: '阿拉伯文',
+        armenian: '亚美尼亚文',
+        georgian: '格鲁吉亚文',
+        ethiopic: '埃塞俄比亚文',
+        cherokee: '切罗基文',
+        tifinagh: '提非纳文',
+        bengali: '孟加拉文',
+        thai: '泰文',
+        hangul: '韩文（谚文）',
+        'cjk-sc': '简体中文',
+        'cjk-tc': '繁体中文',
+        'cjk-jp': '日文',
+        symbols: '符号',
+        'ipa-chars': '国际音标字符',
       },
-      presetHints: {
-        'chinese-full': '中文推荐',
-        'chinese-l1': '更小',
-        'cjk-all': '约 2 万字，很大',
-        'cjk-punct': '',
-        'latin-ext': '',
-        greek: '',
-        cyrillic: '',
-        symbols: '',
-      },
-      extraLabel: '额外保留的字符',
-      extraHint: '粘贴任意文字 —— 里面出现的每个字都会被保留。适合某本书或某个名字。',
-      extraPlaceholder: '粘贴需要保留其中字符的文字…',
       customLabel: '自定义 Unicode 区间',
-      customHint: '逗号分隔的十六进制区间，例如 (0x2900-0x29FF),(0x2E00-0x2EFF)',
-      dropHints: '去掉 hinting（文件更小）',
-      dropHintsHint: 'OnePage 在 219 DPI 下做 1-bit 渲染，hinting 有帮助 —— 除非特别在意体积，否则别勾。',
-      buildBtn: '瘦身字体',
-      building: '正在瘦身…',
-      resultsTitle: '瘦身后的文件',
+      customHint: '可选，使用严格格式并以英文逗号分隔：(0x2900-0x29FF),(0x2E00-0x2EFF)',
+      buildBtn: '生成 .cpfont',
+      cancelBtn: '取消',
+      building: '正在生成字体…',
+      cancelled: '已取消生成。',
+      complete: '字体生成完成。',
+      progressLabel: '字体生成进度',
+      logTitle: '生成详情',
+      resultsTitle: '生成的文件',
       downloadAll: '全部下载（.zip）',
       download: '下载',
-      saved: '已减小',
       installTitle: '怎么安装',
       installSteps: [
-        '下载瘦身后的字体文件（或 zip）。',
-        '拷到 SD 卡的 /fonts/ 目录（没有就新建）。',
-        '把卡插回设备 —— 字体会出现在阅读器的字体设置里。',
+        '保留 <Family>_<size>.cpfont 格式的文件名。',
+        '把文件放进 SD 卡的 /.fonts/<Family>/ 或 /fonts/<Family>/ 目录。',
+        '重启 OnePage 或重新扫描字体，然后在阅读器中选择这个字体家族。',
       ],
-      errNoFont: '请至少选择一个 Regular 字体文件。',
-      errFailed: '无法瘦身该文件 —— 可能是不支持或损坏的字体。',
+      errNoFont: '请先选择常规体 TTF 或 OTF 字体。',
+      errFileType: '当前版本只支持 TTF 和 OTF 源字体。',
+      errTooLarge: '所选源字体总大小超过 128 MB 限制。',
+      errOom: '浏览器内存不足，请减少字符集、字号或字形样式后重试。',
+      errFailed: '无法生成字体。',
     },
     firmware: {
       eyebrow: '固件',

@@ -19,6 +19,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    worker: {
+      format: 'es',
+    },
     resolve: {
       alias: [{ find: /^esptool-js$/, replacement: 'esptool-js/bundle.js' }],
     },

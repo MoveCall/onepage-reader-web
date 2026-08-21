@@ -5,260 +5,501 @@ import { ui } from '../i18n/ui';
 interface Props {
   lang: Lang;
 }
+
 const { lang } = Astro.props;
 const f = ui[lang].fonts;
 
-const faceFields = [
-  { id: 'fileRegular', label: f.styles.regular, tag: f.required, required: true },
-  { id: 'fileBold', label: f.styles.bold, tag: f.optional, required: false },
-  { id: 'fileItalic', label: f.styles.italic, tag: f.optional, required: false },
-  { id: 'fileBoldItalic', label: f.styles.bolditalic, tag: f.optional, required: false },
+const styleFields = [
+  { id: 'fileRegular', label: f.styles.regular, tag: f.required },
+  { id: 'fileBold', label: f.styles.bold, tag: f.optional },
+  { id: 'fileItalic', label: f.styles.italic, tag: f.optional },
+  { id: 'fileBoldItalic', label: f.styles.bolditalic, tag: f.optional },
+];
+const fallbackFields = [
+  { id: 'fallback1Regular', label: f.fallback1 },
+  { id: 'fallback2Regular', label: f.fallback2 },
+];
+const presetOrder = [
+  'reading',
+  'default',
+  'latin-ext',
+  'greek',
+  'cyrillic',
+  'vietnamese',
+  'hebrew',
+  'arabic',
+  'armenian',
+  'georgian',
+  'ethiopic',
+  'cherokee',
+  'tifinagh',
+  'bengali',
+  'thai',
+  'hangul',
+  'cjk-sc',
+  'cjk-tc',
+  'cjk-jp',
+  'symbols',
+  'ipa-chars',
 ];
 
-// preset display order; defaults checked = common Chinese + CJK punctuation
-const presetOrder = ['chinese-full', 'chinese-l1', 'cjk-punct', 'cjk-all', 'latin-ext', 'greek', 'cyrillic', 'symbols'];
-const defaultChecked = new Set(['chinese-full', 'cjk-punct']);
-
-const fileInputCls =
-  'mt-1.5 block w-full text-sm text-ink/60 file:mr-3 file:rounded-md file:border-0 file:bg-ink/5 file:px-3 file:py-1.5 file:font-mono file:text-xs file:font-medium file:text-ink/80 hover:file:bg-ink/10';
-const textInputCls =
-  'mt-1.5 block w-full rounded-md border border-ink/20 bg-surface px-3 py-2 text-sm text-ink shadow-sm placeholder:text-ink/35 focus:border-accent-500 focus:ring-1 focus:ring-accent-500 focus:outline-none';
-
-// strings the client script needs at runtime
-const t = {
+const fileInputClass =
+  'mt-1.5 block w-full min-w-0 text-sm text-ink/65 file:mr-3 file:rounded-md file:border-0 file:bg-ink/5 file:px-3 file:py-2 file:font-mono file:text-xs file:font-medium file:text-ink/80 hover:file:bg-ink/10 disabled:opacity-50';
+const textInputClass =
+  'mt-1.5 block w-full min-w-0 rounded-md border border-ink/20 bg-surface px-3 py-2 text-sm text-ink shadow-sm placeholder:text-ink/35 focus:border-accent-500 focus:ring-1 focus:ring-accent-500 focus:outline-none disabled:opacity-50';
+const runtimeText = {
   building: f.building,
-  errNoFont: f.errNoFont,
-  errFailed: f.errFailed,
+  cancelled: f.cancelled,
+  complete: f.complete,
   download: f.download,
-  saved: f.saved,
+  errNoFont: f.errNoFont,
+  errFileType: f.errFileType,
+  errTooLarge: f.errTooLarge,
+  errOom: f.errOom,
+  errFailed: f.errFailed,
 };
 ---
 
 <section class="py-12 sm:py-16">
-  <div class="mx-auto max-w-3xl px-6">
+  <header class="mx-auto max-w-4xl px-6">
     <p class="font-mono text-xs tracking-wider text-accent-600 uppercase">{f.eyebrow}</p>
-    <h1 class="mt-3 font-serif text-3xl font-medium tracking-tight text-balance text-ink sm:text-4xl">{f.title}</h1>
-    <p class="mt-4 max-w-[60ch] text-base/7 text-pretty text-ink/65">{f.lede}</p>
-  </div>
+    <h1 class="mt-3 font-serif text-3xl font-medium text-balance text-ink sm:text-4xl">{f.title}</h1>
+    <p class="mt-4 max-w-[70ch] text-base/7 text-pretty text-ink/65">{f.lede}</p>
+  </header>
 
-  <div class="mx-auto mt-8 max-w-3xl px-6">
-    <div id="fontTool" class="rounded-xl border border-ink/12 bg-surface p-6 shadow-sm sm:p-8" data-i18n={JSON.stringify(t)}>
-
-      <!-- Output name -->
-      <div>
-        <label for="familyName" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.familyLabel}</label>
-        <input type="text" id="familyName" placeholder={f.familyPlaceholder} class={textInputCls} />
-        <p class="mt-1.5 text-xs text-ink/65">{f.familyHint}</p>
+  <div class="mx-auto mt-8 max-w-4xl px-6">
+    <form
+      id="fontTool"
+      class="rounded-lg border border-ink/15 bg-surface p-5 shadow-sm sm:p-7"
+      data-i18n={JSON.stringify(runtimeText)}
+    >
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="familyName" class="block font-mono text-xs font-medium text-ink/70 uppercase">{f.familyLabel}</label>
+          <input id="familyName" type="text" autocomplete="off" placeholder={f.familyPlaceholder} class={textInputClass} />
+          <p class="mt-1.5 text-xs/5 text-ink/60">{f.familyHint}</p>
+        </div>
+        <div>
+          <label for="fontSizes" class="block font-mono text-xs font-medium text-ink/70 uppercase">{f.sizesLabel}</label>
+          <input id="fontSizes" type="text" inputmode="numeric" value="12,14,16,18" class={`${textInputClass} font-mono`} />
+          <p class="mt-1.5 text-xs/5 text-ink/60">{f.sizesHint}</p>
+        </div>
       </div>
 
-      <!-- Font files -->
-      <div class="mt-6">
-        <label class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.facesLabel}</label>
-        <p class="mt-1 text-xs text-ink/65">{f.facesHint}</p>
+      <fieldset class="mt-7 border-t border-ink/10 pt-6">
+        <legend class="font-mono text-xs font-medium text-ink/70 uppercase">{f.facesLabel}</legend>
+        <p class="mt-1 text-xs/5 text-ink/60">{f.facesHint}</p>
         <div class="mt-3 grid gap-4 sm:grid-cols-2">
-          {faceFields.map((ff) => (
-            <div>
-              <label for={ff.id} class="block text-sm font-medium text-ink/80">
-                {ff.label} <span class="font-mono text-[11px] text-ink/55">({ff.tag})</span>
+          {styleFields.map((field) => (
+            <div class="min-w-0">
+              <label for={field.id} class="block text-sm font-medium text-ink/80">
+                {field.label} <span class="font-mono text-[11px] text-ink/50">({field.tag})</span>
               </label>
-              <input type="file" id={ff.id} accept=".ttf,.otf,.TTF,.OTF" class={fileInputCls} />
+              <input id={field.id} type="file" accept=".ttf,.otf,.TTF,.OTF" class={fileInputClass} />
             </div>
           ))}
         </div>
-      </div>
+      </fieldset>
 
-      <!-- Coverage -->
-      <div class="mt-6">
-        <label class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.coverageLabel}</label>
-        <p class="mt-1 text-xs text-ink/65">{f.coverageHint}</p>
-        <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
-          {presetOrder.map((id) => (
-            <label class="flex items-center gap-2 text-sm text-ink/80">
-              <input type="checkbox" name="preset" value={id} checked={defaultChecked.has(id)} class="rounded border-ink/30 text-accent-600 focus:ring-accent-500" />
-              {f.presetNames[id]}
-              {f.presetHints[id] && <span class="font-mono text-[11px] text-ink/55">{f.presetHints[id]}</span>}
+      <fieldset class="mt-7 border-t border-ink/10 pt-6">
+        <legend class="font-mono text-xs font-medium text-ink/70 uppercase">{f.fallbacksLabel}</legend>
+        <p class="mt-1 text-xs/5 text-ink/60">{f.fallbacksHint}</p>
+        <div class="mt-3 grid gap-4 sm:grid-cols-2">
+          {fallbackFields.map((field) => (
+            <div class="min-w-0">
+              <label for={field.id} class="block text-sm font-medium text-ink/80">
+                {field.label} <span class="font-mono text-[11px] text-ink/50">({f.optional})</span>
+              </label>
+              <input id={field.id} type="file" accept=".ttf,.otf,.TTF,.OTF" class={fileInputClass} />
+            </div>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="mt-7 border-t border-ink/10 pt-6">
+        <legend class="font-mono text-xs font-medium text-ink/70 uppercase">{f.coverageLabel}</legend>
+        <p class="mt-1 text-xs/5 text-ink/60">{f.coverageHint}</p>
+        <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+          {presetOrder.map((presetId) => (
+            <label class="flex min-w-0 items-start gap-2 text-sm/5 text-ink/80">
+              <input
+                type="checkbox"
+                name="preset"
+                value={presetId}
+                checked={presetId === 'reading'}
+                class="mt-0.5 shrink-0 rounded border-ink/30 text-accent-600 focus:ring-accent-500"
+              />
+              <span>{f.presetNames[presetId]}</span>
             </label>
           ))}
         </div>
+      </fieldset>
+
+      <div class="mt-7 border-t border-ink/10 pt-6">
+        <label for="customRanges" class="block font-mono text-xs font-medium text-ink/70 uppercase">{f.customLabel}</label>
+        <input id="customRanges" type="text" placeholder="(0x2900-0x29FF),(0x2E00-0x2EFF)" class={`${textInputClass} font-mono`} />
+        <p class="mt-1.5 text-xs/5 text-ink/60">{f.customHint}</p>
       </div>
 
-      <!-- Extra characters -->
-      <div class="mt-6">
-        <label for="extraText" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.extraLabel}</label>
-        <p class="mt-1 text-xs text-ink/65">{f.extraHint}</p>
-        <textarea id="extraText" rows="2" placeholder={f.extraPlaceholder} class={textInputCls}></textarea>
-      </div>
-
-      <!-- Custom ranges -->
-      <div class="mt-6">
-        <label for="customRanges" class="block font-mono text-xs font-medium tracking-wide text-ink/70 uppercase">{f.customLabel}</label>
-        <input type="text" id="customRanges" placeholder="(0x2900-0x29FF),(0x2E00-0x2EFF)" class={`${textInputCls} font-mono`} />
-        <p class="mt-1.5 text-xs text-ink/65">{f.customHint}</p>
-      </div>
-
-      <!-- Drop hinting -->
-      <div class="mt-6">
-        <label class="flex items-center gap-2 text-sm text-ink/80">
-          <input type="checkbox" id="dropHints" class="rounded border-ink/30 text-accent-600 focus:ring-accent-500" />
-          {f.dropHints}
-        </label>
-        <p class="mt-1 text-xs text-ink/65">{f.dropHintsHint}</p>
-      </div>
-
-      <!-- Build -->
-      <div class="mt-8">
-        <button id="buildBtn" type="button" class="inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 text-sm font-semibold text-paper shadow-sm hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-50">
-          <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75a4.5 4.5 0 0 1-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 1 1-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 0 1 6.336-4.486l-3.276 3.276a3.004 3.004 0 0 0 2.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852Z"/></svg>
+      <div class="mt-7 flex flex-wrap items-center gap-3 border-t border-ink/10 pt-6">
+        <button id="buildBtn" type="submit" class="rounded-md bg-ink px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-paper shadow-sm hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-45">
           {f.buildBtn}
+        </button>
+        <button id="cancelBtn" type="button" disabled class="rounded-md border border-ink/20 px-4 py-2.5 text-sm font-medium whitespace-nowrap text-ink/75 hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40">
+          {f.cancelBtn}
         </button>
       </div>
 
-      <!-- Progress -->
-      <div id="progressWrap" class="mt-6 hidden">
+      <div id="progressWrap" class="mt-5 hidden" aria-live="polite">
         <div class="h-1.5 w-full overflow-hidden rounded-full bg-ink/10">
-          <div id="progressBar" class="h-full rounded-full bg-accent-500 transition-all duration-300" style="width:0%"></div>
+          <div id="progressBar" role="progressbar" aria-label={f.progressLabel} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="h-full rounded-full bg-accent-500 transition-[width] duration-200" style="width:0%"></div>
         </div>
-        <p id="progressText" class="mt-2 text-center font-mono text-xs text-ink/55"></p>
+        <p id="progressText" class="mt-2 min-h-5 break-words font-mono text-xs/5 text-ink/60"></p>
       </div>
 
-      <!-- Results -->
-      <div id="resultsPanel" class="mt-6 hidden">
-        <div class="flex items-center justify-between">
-          <h3 class="font-mono text-xs font-semibold tracking-wide text-ink/70 uppercase">{f.resultsTitle}</h3>
-          <button id="downloadAllBtn" type="button" class="inline-flex items-center gap-1.5 rounded-md bg-ink/5 px-3 py-1.5 text-xs font-medium text-ink/80 hover:bg-ink/10">
+      <details class="mt-4 border-t border-ink/10 pt-3">
+        <summary class="cursor-pointer select-none font-mono text-[11px] text-ink/45 hover:text-ink/65">{f.logTitle}</summary>
+        <pre id="buildLog" class="mt-2 max-h-48 overflow-auto whitespace-pre-wrap break-words border-l border-ink/10 pl-3 font-mono text-[11px]/5 text-ink/50"></pre>
+      </details>
+
+      <section id="resultsPanel" class="mt-6 hidden border-t border-ink/10 pt-5" aria-live="polite">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 class="font-mono text-xs font-semibold text-ink/70 uppercase">{f.resultsTitle}</h2>
+          <button id="downloadAllBtn" type="button" disabled class="rounded-md border border-ink/20 px-3 py-2 text-xs font-medium whitespace-nowrap text-ink/80 hover:bg-ink/5 disabled:opacity-40">
             {f.downloadAll}
           </button>
         </div>
         <ul id="fileList" class="mt-3 divide-y divide-ink/10 border-y border-ink/10"></ul>
-      </div>
-    </div>
+      </section>
+    </form>
 
-    <!-- Install -->
-    <div class="mt-8 rounded-xl border border-ink/12 bg-surface p-6 sm:p-8">
+    <section class="mt-9 border-t border-ink/15 pt-7">
       <h2 class="font-serif text-lg font-medium text-ink">{f.installTitle}</h2>
       <ol class="mt-4 list-decimal space-y-2 pl-5 text-sm/6 text-ink/70">
-        {f.installSteps.map((s) => <li>{s}</li>)}
+        {f.installSteps.map((step) => <li>{step}</li>)}
       </ol>
-    </div>
+    </section>
   </div>
 </section>
 
 <script>
-  import { subsetFont, buildCodepointSet } from '../fonts/subset';
   import JSZip from 'jszip';
+  import {
+    MAX_SOURCE_BYTES,
+    createBuildRequest,
+    isLikelyOutOfMemoryError,
+    startCpfontBuild,
+    totalSourceFileBytes,
+    type CpfontBuildHandle,
+  } from '../fonts/cpfont/client';
+  import type { CpfontOutput, FontSource, FontStyleId } from '../fonts/cpfont/types';
 
-  const root = document.getElementById('fontTool');
+  const root = document.getElementById('fontTool') as HTMLFormElement | null;
   if (root) {
-    const T = JSON.parse(root.getAttribute('data-i18n') || '{}');
-    const $ = (id: string) => document.getElementById(id) as HTMLElement;
-    const buildBtn = $('buildBtn') as HTMLButtonElement;
-    const progressWrap = $('progressWrap');
-    const progressBar = $('progressBar');
-    const progressText = $('progressText');
-    const resultsPanel = $('resultsPanel');
-    const fileList = $('fileList');
+    const text = JSON.parse(root.dataset.i18n || '{}') as Record<string, string>;
+    const byId = <T extends HTMLElement>(id: string): T => {
+      const element = document.getElementById(id);
+      if (!element) throw new Error(`Missing font tool element: ${id}`);
+      return element as T;
+    };
+    const buildButton = byId<HTMLButtonElement>('buildBtn');
+    const cancelButton = byId<HTMLButtonElement>('cancelBtn');
+    const progressWrap = byId<HTMLElement>('progressWrap');
+    const progressBar = byId<HTMLElement>('progressBar');
+    const progressText = byId<HTMLElement>('progressText');
+    const buildLog = byId<HTMLElement>('buildLog');
+    const resultsPanel = byId<HTMLElement>('resultsPanel');
+    const fileList = byId<HTMLUListElement>('fileList');
+    const downloadAllButton = byId<HTMLButtonElement>('downloadAllBtn');
+    const formControls = Array.from(root.querySelectorAll<HTMLInputElement>('input'));
 
-    type Built = { name: string; blob: Blob; url: string };
-    let built: Built[] = [];
+    type BuiltFile = CpfontOutput & { blob: Blob; url: string };
+    let builtFiles: BuiltFile[] = [];
+    let builtFamily = '';
+    let activeBuild: CpfontBuildHandle | null = null;
+    let operationToken = 0;
+    let buildPhase: 'idle' | 'reading' | 'cancelling-read' | 'worker' = 'idle';
+    let zipGenerating = false;
 
-    const styleMap: [string, string][] = [
-      ['fileRegular', 'Regular'],
-      ['fileBold', 'Bold'],
-      ['fileItalic', 'Italic'],
-      ['fileBoldItalic', 'BoldItalic'],
+    const styleInputs: Array<[FontStyleId, string]> = [
+      [0, 'fileRegular'],
+      [1, 'fileBold'],
+      [2, 'fileItalic'],
+      [3, 'fileBoldItalic'],
     ];
+    const fallbackInputs = ['fallback1Regular', 'fallback2Regular'];
 
-    function sanitize(name: string) {
-      return (name || 'Font').replace(/[^A-Za-z0-9_一-鿿-]+/g, ' ').trim().replace(/\s+/g, '') || 'Font';
-    }
-    function fmt(bytes: number) {
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+    function formatBytes(bytes: number): string {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
     }
 
-    async function build() {
-      const regular = ($('fileRegular') as HTMLInputElement).files?.[0];
-      if (!regular) { alert(T.errNoFont); return; }
+    function appendLog(message: string): void {
+      buildLog.textContent += `${buildLog.textContent ? '\n' : ''}${message}`;
+      buildLog.scrollTop = buildLog.scrollHeight;
+    }
 
-      const familyInput = ($('familyName') as HTMLInputElement).value.trim();
-      const family = sanitize(familyInput || regular.name.replace(/\.(ttf|otf)$/i, ''));
-      const presets = Array.from(document.querySelectorAll('input[name="preset"]:checked')).map((el) => (el as HTMLInputElement).value);
-      const customRanges = ($('customRanges') as HTMLInputElement).value;
-      const extraText = ($('extraText') as HTMLTextAreaElement).value;
-      const dropHints = ($('dropHints') as HTMLInputElement).checked;
-      const cps = buildCodepointSet(presets, customRanges, extraText);
+    function syncDownloadButton(): void {
+      downloadAllButton.disabled = zipGenerating || builtFiles.length === 0;
+    }
 
-      const faces: { file: File; style: string }[] = [];
-      for (const [id, style] of styleMap) {
-        const file = ($(id) as HTMLInputElement).files?.[0];
-        if (file) faces.push({ file, style });
+    function setBuildPhase(nextPhase: typeof buildPhase): void {
+      buildPhase = nextPhase;
+      const locked = nextPhase !== 'idle';
+      buildButton.disabled = locked;
+      cancelButton.disabled = nextPhase !== 'reading' && nextPhase !== 'worker';
+      for (const control of formControls) control.disabled = locked;
+    }
+
+    function setProgress(percent: number, message: string, isError = false): void {
+      const bounded = Math.max(0, Math.min(100, percent));
+      progressWrap.classList.remove('hidden');
+      progressBar.style.width = `${bounded}%`;
+      progressBar.setAttribute('aria-valuenow', String(bounded));
+      progressText.textContent = message;
+      progressText.classList.toggle('text-red-700', isError);
+      progressText.classList.toggle('text-ink/60', !isError);
+    }
+
+    function clearResults(): void {
+      for (const file of builtFiles) URL.revokeObjectURL(file.url);
+      builtFiles = [];
+      builtFamily = '';
+      fileList.replaceChildren();
+      resultsPanel.classList.add('hidden');
+      syncDownloadButton();
+    }
+
+    function cpfontBlob(output: CpfontOutput): Blob {
+      const { bytes } = output;
+      const buffer = bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
+        ? bytes.buffer as ArrayBuffer
+        : bytes.slice().buffer as ArrayBuffer;
+      return new Blob([buffer], { type: 'application/octet-stream' });
+    }
+
+    function renderResults(outputs: CpfontOutput[], family: string): void {
+      clearResults();
+      builtFamily = family;
+      builtFiles = outputs.map((output) => {
+        const blob = cpfontBlob(output);
+        return { ...output, blob, url: URL.createObjectURL(blob) };
+      });
+
+      for (const file of builtFiles) {
+        const item = document.createElement('li');
+        item.className = 'flex flex-wrap items-center justify-between gap-3 py-3';
+        const metadata = document.createElement('div');
+        metadata.className = 'min-w-0';
+        const name = document.createElement('div');
+        name.className = 'break-all text-sm font-medium text-ink';
+        name.textContent = file.name;
+        const size = document.createElement('div');
+        size.className = 'mt-0.5 font-mono text-xs text-ink/55';
+        size.textContent = formatBytes(file.bytes.byteLength);
+        metadata.append(name, size);
+
+        const download = document.createElement('a');
+        download.href = file.url;
+        download.download = file.name;
+        download.className = 'shrink-0 rounded-md px-3 py-2 font-mono text-xs font-medium text-accent-600 hover:bg-accent-500/10';
+        download.textContent = text.download;
+        download.setAttribute('aria-label', `${text.download}: ${file.name}`);
+        item.append(metadata, download);
+        fileList.append(item);
+      }
+      syncDownloadButton();
+      resultsPanel.classList.remove('hidden');
+    }
+
+    function selectedFile(id: string): File | undefined {
+      return byId<HTMLInputElement>(id).files?.[0];
+    }
+
+    async function readSource(file: File): Promise<FontSource> {
+      if (!/\.(ttf|otf)$/i.test(file.name)) throw new Error(text.errFileType);
+      return { label: file.name, bytes: await file.arrayBuffer() };
+    }
+
+    async function buildFonts(): Promise<void> {
+      if (buildPhase !== 'idle') return;
+      const regularFile = selectedFile('fileRegular');
+      if (!regularFile) {
+        setProgress(0, text.errNoFont, true);
+        return;
       }
 
-      buildBtn.disabled = true;
-      built.forEach((b) => URL.revokeObjectURL(b.url));
-      built = [];
-      fileList.innerHTML = '';
-      resultsPanel.classList.add('hidden');
-      progressWrap.classList.remove('hidden');
-      progressBar.style.width = '5%';
+      const selectedFiles = [
+        ...styleInputs.map(([, inputId]) => selectedFile(inputId)),
+        ...fallbackInputs.map((inputId) => selectedFile(inputId)),
+      ].filter((file): file is File => file !== undefined);
+      const unsupportedFile = selectedFiles.find((file) => !/\.(ttf|otf)$/i.test(file.name));
+      if (unsupportedFile) {
+        setProgress(0, text.errFileType, true);
+        appendLog(`Unsupported source file: ${unsupportedFile.name}`);
+        return;
+      }
+      let selectedBytes: number;
+      try {
+        selectedBytes = totalSourceFileBytes(selectedFiles);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        setProgress(0, text.errFailed, true);
+        appendLog(message);
+        return;
+      }
+      if (selectedBytes > MAX_SOURCE_BYTES) {
+        setProgress(0, text.errTooLarge, true);
+        appendLog(`Selected source bytes: ${selectedBytes}; limit: ${MAX_SOURCE_BYTES}`);
+        return;
+      }
+
+      const token = ++operationToken;
+      clearResults();
+      buildLog.textContent = '';
+      setBuildPhase('reading');
+      setProgress(0, text.building);
+      appendLog(text.building);
+
+      let enteredWorkerStage = false;
+      try {
+        const styles: Partial<Record<FontStyleId, FontSource>> = {};
+        for (const [styleId, inputId] of styleInputs) {
+          const file = selectedFile(inputId);
+          if (file) styles[styleId] = await readSource(file);
+          if (operationToken !== token) return;
+        }
+        const fallbacks: FontSource[] = [];
+        for (const inputId of fallbackInputs) {
+          const file = selectedFile(inputId);
+          if (file) fallbacks.push(await readSource(file));
+          if (operationToken !== token) return;
+        }
+
+        const familyInput = byId<HTMLInputElement>('familyName').value.trim();
+        const fallbackFamily = regularFile.name.replace(/\.(ttf|otf)$/i, '');
+        const presetIds = Array.from(root.querySelectorAll<HTMLInputElement>('input[name="preset"]:checked'))
+          .map((input) => input.value);
+        const request = createBuildRequest({
+          family: familyInput || fallbackFamily,
+          fontSizes: byId<HTMLInputElement>('fontSizes').value,
+          presetIds,
+          customRanges: byId<HTMLInputElement>('customRanges').value,
+          styles,
+          fallbacks,
+        });
+        if (operationToken !== token) return;
+
+        enteredWorkerStage = true;
+        setBuildPhase('worker');
+        let terminal = false;
+        const handle = startCpfontBuild(request, {
+          onEvent(event) {
+            if (operationToken !== token) return;
+            appendLog(event.message);
+            if (event.type === 'progress') {
+              setProgress(event.percent, `${text.building} ${Math.round(event.percent)}%`);
+            }
+          },
+          onComplete(outputs) {
+            terminal = true;
+            if (operationToken !== token) return;
+            activeBuild = null;
+            renderResults(outputs, request.family);
+            setProgress(100, text.complete);
+            appendLog(text.complete);
+            setBuildPhase('idle');
+          },
+          onError(error) {
+            terminal = true;
+            if (operationToken !== token) return;
+            activeBuild = null;
+            const message = error.message || text.errFailed;
+            setProgress(0, isLikelyOutOfMemoryError(error) ? text.errOom : text.errFailed, true);
+            appendLog(message);
+            setBuildPhase('idle');
+          },
+        });
+        if (!terminal && operationToken === token) activeBuild = handle;
+      } catch (error) {
+        if (operationToken !== token) return;
+        const message = error instanceof Error ? error.message : String(error);
+        setProgress(0, isLikelyOutOfMemoryError(error) ? text.errOom : text.errFailed, true);
+        appendLog(message);
+        activeBuild = null;
+        setBuildPhase('idle');
+      } finally {
+        if (
+          !enteredWorkerStage
+          && (buildPhase === 'reading' || buildPhase === 'cancelling-read')
+        ) {
+          setBuildPhase('idle');
+        }
+      }
+    }
+
+    function cancelBuild(): void {
+      if (buildPhase === 'reading') {
+        operationToken += 1;
+        setBuildPhase('cancelling-read');
+        setProgress(0, text.cancelled);
+        appendLog(text.cancelled);
+        return;
+      }
+      if (buildPhase !== 'worker') return;
+      operationToken += 1;
+      const handle = activeBuild;
+      activeBuild = null;
+      handle?.cancel();
+      setProgress(0, text.cancelled);
+      appendLog(text.cancelled);
+      setBuildPhase('idle');
+    }
+
+    async function downloadAll(): Promise<void> {
+      if (builtFiles.length === 0 || builtFamily === '' || zipGenerating) return;
+      const family = builtFamily;
+      const files = builtFiles.map(({ name, blob }) => ({ name, blob }));
+      zipGenerating = true;
+      syncDownloadButton();
 
       try {
-        for (let i = 0; i < faces.length; i++) {
-          const { file, style } = faces[i];
-          progressText.textContent = `${T.building} ${style} (${i + 1}/${faces.length})`;
-          progressBar.style.width = 8 + Math.round((i / faces.length) * 84) + '%';
-          const inBytes = new Uint8Array(await file.arrayBuffer());
-          const out = await subsetFont(inBytes, cps, { dropHints });
-          const ext = /\.otf$/i.test(file.name) ? 'otf' : 'ttf';
-          const name = `${family}-${style}.${ext}`;
-          const blob = new Blob([out], { type: 'font/' + ext });
-          built.push({ name, blob, url: URL.createObjectURL(blob) });
-          addRow(name, inBytes.length, out.length);
-        }
-        progressBar.style.width = '100%';
-        progressText.textContent = '✓';
-        resultsPanel.classList.remove('hidden');
-      } catch (err) {
-        console.error(err);
-        progressText.textContent = T.errFailed;
+        const zip = new JSZip();
+        for (const file of files) zip.file(`${family}/${file.name}`, file.blob);
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${family}_cpfonts.zip`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        setProgress(0, text.errFailed, true);
+        appendLog(`ZIP generation failed: ${message}`);
       } finally {
-        buildBtn.disabled = false;
+        zipGenerating = false;
+        syncDownloadButton();
       }
     }
 
-    function addRow(name: string, orig: number, now: number) {
-      const pct = orig > 0 ? Math.round((1 - now / orig) * 100) : 0;
-      const li = document.createElement('li');
-      li.className = 'flex items-center justify-between gap-3 py-3';
-      const left = document.createElement('div');
-      left.innerHTML =
-        `<div class="text-sm font-medium text-ink">${name}</div>` +
-        `<div class="mt-0.5 font-mono text-xs text-ink/65">${fmt(orig)} → ${fmt(now)} · ${pct}% ${T.saved}</div>`;
-      const a = document.createElement('a');
-      const last = built[built.length - 1];
-      a.href = last.url;
-      a.download = name;
-      a.className = 'shrink-0 rounded-md px-2.5 py-1 font-mono text-xs font-medium text-accent-600 hover:bg-accent-500/10';
-      a.textContent = T.download;
-      li.appendChild(left);
-      li.appendChild(a);
-      fileList.appendChild(li);
+    function dispose(): void {
+      operationToken += 1;
+      activeBuild?.cancel();
+      activeBuild = null;
+      clearResults();
     }
 
-    async function downloadAll() {
-      if (!built.length) return;
-      const zip = new JSZip();
-      for (const b of built) zip.file(b.name, b.blob);
-      const content = await zip.generateAsync({ type: 'blob' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(content);
-      a.download = (($('familyName') as HTMLInputElement).value.trim() || 'fonts').replace(/\s+/g, '_') + '_subset.zip';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    buildBtn.addEventListener('click', build);
-    $('downloadAllBtn').addEventListener('click', downloadAll);
+    root.addEventListener('submit', (event) => {
+      event.preventDefault();
+      void buildFonts();
+    });
+    cancelButton.addEventListener('click', cancelBuild);
+    downloadAllButton.addEventListener('click', () => void downloadAll());
+    window.addEventListener('pagehide', dispose, { once: true });
+    window.addEventListener('unload', dispose, { once: true });
   }
 </script>

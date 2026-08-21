@@ -39,8 +39,9 @@ const switchHref = switchHrefOverride ?? localizedPath(logical, otherLang);
     <div class="flex items-center gap-x-1 font-mono text-[13px] sm:gap-x-3">
       <a href={`${home}#features`} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.features}</a>
       <a href={logPath} class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.notes}</a>
+      <a href={fontsPath} class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.fontTool}</a>
       <a href={firmwarePath} class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.firmware}</a>
-      <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink">{t.github}</a>
+      <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="hidden px-1.5 py-1 font-medium text-ink/55 no-underline hover:text-ink sm:inline">{t.github}</a>
       <a
         href={switchHref}
         class="ml-1 rounded-sm border border-ink/20 px-2 py-1 font-medium text-ink/65 no-underline hover:border-ink/40 hover:text-ink"
