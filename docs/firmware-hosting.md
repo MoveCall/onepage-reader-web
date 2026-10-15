@@ -17,13 +17,13 @@ site. No CORS involved.
 
     public/firmware/
       manifest.json                  # flash manifest (small, in git)
-      onepage-firmware-v0.1.0.bin    # merged 0x0 flash image (in git)
+      onepage-firmware-v0.1.1.bin    # merged 0x0 flash image (in git)
 
 `manifest.json` pins `chipFamily: "ESP32-C61"` and a single part at offset 0 with
 a **relative** path; the flasher resolves the `.bin` against the manifest URL
 (same origin):
 
-    { "path": "onepage-firmware-v0.1.0.bin", "offset": 0 }
+    { "path": "onepage-firmware-v0.1.1.bin", "offset": 0 }
 
 The page reads it via `src/components/Firmware.astro` →
 `${BASE_URL}firmware/manifest.json`, then hands the resolved URL + offset to
