@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import TxtToEpubTool from '../components/TxtToEpubTool.astro';
+import Footer from '../components/Footer.astro';
+
+const lang = 'en';
+---
+
+<Layout
+  lang={lang}
+  title="TXT to EPUB — OnePage · 壹頁"
+  description="Convert plain-text TXT files into standard EPUB books with automatic encoding detection and smart chapter splitting, entirely in your browser."
+>
+  <Nav lang={lang} />
+  <main>
+    <TxtToEpubTool lang={lang} />
+  </main>
+  <Footer lang={lang} showAbout={false} />
+</Layout>

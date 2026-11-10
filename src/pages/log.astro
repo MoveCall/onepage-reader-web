@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import BuildLog from '../components/BuildLog.astro';
+import HardwareShowcase from '../components/HardwareShowcase.astro';
 import Footer from '../components/Footer.astro';
 
 const lang = 'en';
@@ -15,6 +16,7 @@ const lang = 'en';
   <Nav lang={lang} />
   <main>
     <BuildLog lang={lang} />
+    <HardwareShowcase lang={lang} />
   </main>
   <Footer lang={lang} showAbout={false} />
 </Layout>

@@ -80,12 +80,117 @@ type FontsContent = {
   errFailed: string;
 };
 
+type TxtToEpubContent = {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  fileLabel: string;
+  fileHint: string;
+  titleLabel: string;
+  titlePlaceholder: string;
+  authorLabel: string;
+  authorPlaceholder: string;
+  encodingLabel: string;
+  encodingHint: string;
+  encodingOptions: {
+    auto: string;
+    utf8: string;
+    gb18030: string;
+    big5: string;
+  };
+  splitLabel: string;
+  splitHint: string;
+  splitOptions: {
+    auto: string;
+    none: string;
+    custom: string;
+  };
+  customRegexLabel: string;
+  customRegexPlaceholder: string;
+  customRegexHint: string;
+  prologueTitle: string;
+  fallbackTitle: string;
+  buildBtn: string;
+  building: string;
+  complete: string;
+  previewTitle: string;
+  resultsTitle: string;
+  download: string;
+  detectedInfo: string;
+  chaptersUnit: string;
+  charsUnit: string;
+  usageTitle: string;
+  usageSteps: string[];
+  errNoFile: string;
+  errFileType: string;
+  errEmptyRegex: string;
+  errInvalidRegex: string;
+  errFailed: string;
+};
+
+type ShowcaseContent = {
+  design: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    pillars: { num: string; title: string; body: string }[];
+    dxfCaptions: { front: string; right: string; usb: string };
+    videoLabel: string;
+  };
+  interfaces: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    diagramAlt: string;
+    callouts: { num: string; title: string; desc: string }[];
+    navBarEyebrow: string;
+    navBarTitle: string;
+    navBarBody: string;
+    navBarKeys: { key: string; label: string }[];
+  };
+  engineering: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+    points: { title: string; body: string }[];
+    archLabel: string;
+    archAlt: string;
+    structureTitle: string;
+    pcb: { title: string; lines: string[] };
+    stack: { title: string; lines: string[] };
+    assembly: { title: string; lines: string[] };
+    notes: {
+      bootTitle: string;
+      bootBody: string;
+      sdTitle: string;
+      sdBody: string;
+      screenTitle: string;
+      screenBody: string;
+    };
+  };
+  ai: {
+    eyebrow: string;
+    badge: string;
+    title: string;
+    body: string;
+    cards: { title: string; body: string; img: string; alt: string }[];
+    tags: string[];
+  };
+  photos: {
+    eyebrow: string;
+    title: string;
+    lede: string;
+  };
+};
+
 type Content = {
   nav: {
     features: string;
     notes: string;
     firmware: string;
+    tools: string;
     fontTool: string;
+    txtToEpub: string;
     github: string;
   };
   hero: {
@@ -127,6 +232,8 @@ type Content = {
     tagline: string;
     openSource: string;
     rights: string;
+    pvLabel: string;
+    uvLabel: string;
   };
   specs: {
     eyebrow: string;
@@ -139,7 +246,9 @@ type Content = {
     dotLabel: string;
     photos: { src: string; alt: string; title: string; sub: string }[];
   };
+  showcase: ShowcaseContent;
   fonts: FontsContent;
+  txtToEpub: TxtToEpubContent;
   firmware: FirmwareContent;
 };
 
@@ -149,7 +258,9 @@ export const ui: Record<Lang, Content> = {
       features: 'The build',
       notes: 'Log',
       firmware: 'Firmware',
+      tools: 'Tools',
       fontTool: 'Font Tool',
+      txtToEpub: 'TXT to EPUB',
       github: 'GitHub',
     },
     hero: {
@@ -268,6 +379,8 @@ export const ui: Record<Lang, Content> = {
       tagline: 'OnePage · 壹頁 — a 4.26″ e-ink reader.',
       openSource: 'Built on CrossPoint (MIT). My port and these notes are shared openly.',
       rights: 'A personal build log. Names and brand are still settling.',
+      pvLabel: 'Views',
+      uvLabel: 'Visitors',
     },
     specs: {
       eyebrow: 'Tech specs',
@@ -317,6 +430,125 @@ export const ui: Record<Lang, Content> = {
         { src: '/gallery/OnePage-3D-a4.jpg', alt: 'OnePage — wake key', title: 'The wake key', sub: 'Restrained, but easy to reach' },
         { src: '/gallery/OnePage-3D-a5.jpg', alt: 'OnePage — microSD slot', title: 'A little surprise', sub: 'The microSD slot has a face' },
       ],
+    },
+    showcase: {
+      design: {
+        eyebrow: 'ID Design',
+        title: 'Thin, centered, symmetrical, clean.',
+        lede: 'The front of OnePage tries not to look like “hardware.” The screen, keys, and ports are organized around a central axis so it feels like a quiet reading sheet rather than a dev board in a box.',
+        pillars: [
+          { num: '01', title: 'Thin', body: 'Compressed internal stackup for a slim, restrained profile.' },
+          { num: '02', title: 'Centered', body: 'Ports and controls align to a strict central axis.' },
+          { num: '03', title: 'Symmetrical', body: 'Three-segment bottom chin forms a balanced visual order.' },
+          { num: '04', title: 'Clean', body: 'Anything that can stay hidden stays off the front face.' },
+        ],
+        dxfCaptions: {
+          front: 'FRONT · DXF CONVERSION',
+          right: 'RIGHT EDGE',
+          usb: 'USB EDGE',
+        },
+        videoLabel: 'Watch on Bilibili · MoveCall ↗',
+      },
+      interfaces: {
+        eyebrow: 'Interfaces & controls',
+        title: 'Every key and port, in its place.',
+        lede: 'Side page-turn keys paired with a three-segment bottom navigation bar — full control without a touchscreen.',
+        diagramAlt: 'OnePage ports and buttons diagram',
+        callouts: [
+          { num: '01', title: 'Wake / AI', desc: 'Short press to wake · Long press for AI' },
+          { num: '02', title: 'Page Up', desc: 'Previous page' },
+          { num: '03', title: 'Page Down', desc: 'Next page' },
+          { num: '04', title: 'USB-C', desc: 'Charging, debugging & firmware updates' },
+          { num: '05', title: 'Micro SD', desc: 'Required to boot (FAT32); shows “Micro SD Error” if missing' },
+          { num: '06', title: 'Lanyard Hole', desc: 'Built-in corner loop for easy carry' },
+        ],
+        navBarEyebrow: 'FRONT NAVIGATION BAR',
+        navBarTitle: 'Three-segment bottom navigation bar',
+        navBarBody: 'Left for Back, center rocker for Left / Right navigation, right for OK. The front and back panels are bonded with adhesive for a seamless body.',
+        navBarKeys: [
+          { key: 'Back', label: 'Return' },
+          { key: 'Left / Right', label: 'Navigate' },
+          { key: 'OK', label: 'Confirm' },
+        ],
+      },
+      engineering: {
+        eyebrow: 'Engineering & structure',
+        title: 'Making everything coexist quietly in 5 mm.',
+        lede: 'The hard part isn’t cramming features in — it’s getting them to share a thin enclosure without getting in each other’s way.',
+        points: [
+          { title: 'Shared SPI bus', body: 'The e-paper display and Micro SD card share the SPI bus, preserving full expansion within tight GPIO limits.' },
+          { title: 'On-demand peripheral power', body: 'The SD card and PDM microphone power up only when needed, cutting idle loads during deep sleep.' },
+          { title: 'ADC resistor-ladder keys', body: 'Four-way front navigation runs through an ADC resistor ladder to save GPIO pins.' },
+          { title: 'Reliable recovery', body: 'Direct USB-C debugging and hardware boot-mode entry keep DIY firmware hacking safe.' },
+        ],
+        archLabel: 'SYSTEM ARCHITECTURE',
+        archAlt: 'OnePage System Architecture Diagram',
+        structureTitle: 'PCB & structural craft',
+        pcb: {
+          title: '01 · Mainboard',
+          lines: [
+            'Layers: 4-layer PCB',
+            'Finished thickness: 0.80 ± 0.10 mm',
+            'Stackup: JLC04081H-3313',
+          ],
+        },
+        stack: {
+          title: '02 · Structural Stack',
+          lines: [
+            'Front: High-clarity PET panel (0.4 mm)',
+            'Mid-frame: CNC anodized aluminum',
+            'Back: Acrylic panel (0.5 mm)',
+          ],
+        },
+        assembly: {
+          title: '03 · Assembly',
+          lines: [
+            'Layered screen / mainboard / battery stack',
+            'Individually aligned physical keycaps',
+            'Bonded front & back panels (test before final bonding)',
+          ],
+        },
+        notes: {
+          bootTitle: 'Entering Boot Mode manually',
+          bootBody: 'Hold down the “Page Down” button, short-press Reset with a pin, release Reset first, then release “Page Down” to enter download mode.',
+          sdTitle: 'Micro SD boot requirement',
+          sdBody: 'OnePage boots its system from the FAT32 Micro SD card. Without a card inserted, the device will not boot and displays “Micro SD Card Error”.',
+          screenTitle: 'Handle the e-paper glass with care',
+          screenBody: 'The e-ink glass substrate is fragile — avoid point pressure, bending, or pressing hard objects against the panel during assembly.',
+        },
+      },
+      ai: {
+        eyebrow: 'Easter Egg · AI Experimental',
+        badge: 'EXPERIMENTAL FIRMWARE BRANCH',
+        title: 'Beyond reading, a quiet experiment with AI.',
+        body: 'AI features live on a separate experimental firmware branch so the main reading firmware stays rock-solid. It connects to agent frameworks like OpenClaw, Hermes, and DeepSeek Harness to explore lightweight AI interaction on e-paper.',
+        cards: [
+          {
+            title: 'Chat & Q&A',
+            body: 'Natural-language conversation, knowledge Q&A, and lightweight task interaction on e-ink.',
+            img: 'https://image.lceda.cn/oshwhub/pullImage/04c3698e83c74e4fa464179ae96be236.png',
+            alt: 'OnePage AI Chat and Q&A',
+          },
+          {
+            title: 'Text-to-Image',
+            body: 'Generate images from natural-language prompts and render them dithered for the e-paper screen.',
+            img: 'https://image.lceda.cn/oshwhub/pullImage/b83107f997b04a8aaf67f8b8b40b4ec6.png',
+            alt: 'OnePage AI Text to Image',
+          },
+          {
+            title: 'Agent Execution',
+            body: 'Testing real-world multi-step agent actions — like ordering a coffee straight from the reader.',
+            img: 'https://image.lceda.cn/oshwhub/pullImage/64e13bf84b0d4b5baca2833de1924c06.jpg',
+            alt: 'OnePage AI Agent Execution',
+          },
+        ],
+        tags: ['OpenClaw', 'Hermes', 'DeepSeek Harness', 'Experimental'],
+      },
+      photos: {
+        eyebrow: 'In the wild',
+        title: 'Real-world photos.',
+        lede: 'Actual builds on the desk and in the hand.',
+      },
     },
     fonts: {
       eyebrow: 'Font tool',
@@ -385,6 +617,57 @@ export const ui: Record<Lang, Content> = {
       errOom: 'Not enough browser memory. Try fewer character sets, font sizes, or styles.',
       errFailed: 'Could not build the font.',
     },
+    txtToEpub: {
+      eyebrow: 'TXT to EPUB',
+      title: 'Pack TXT files into clean EPUBs.',
+      lede: 'Convert plain-text books into standard EPUB files with automatic encoding detection (UTF-8 / GBK / GB18030 / Big5) and smart chapter splitting — entirely in your browser.',
+      fileLabel: 'TXT file',
+      fileHint: 'Select a .txt file from your device. Everything runs locally without uploading.',
+      titleLabel: 'Book title',
+      titlePlaceholder: 'Defaults to the TXT filename',
+      authorLabel: 'Author (optional)',
+      authorPlaceholder: 'e.g. Anonymous',
+      encodingLabel: 'Text encoding',
+      encodingHint: 'Auto-detect handles UTF-8, GBK / GB18030, and Big5 automatically.',
+      encodingOptions: {
+        auto: 'Auto-detect (UTF-8 / GBK / GB18030 / Big5)',
+        utf8: 'UTF-8',
+        gb18030: 'GB18030 / GBK (Simplified Chinese)',
+        big5: 'Big5 (Traditional Chinese)',
+      },
+      splitLabel: 'Chapter splitting',
+      splitHint: 'Detect standard Chinese / English chapter headings, use a custom regex, or pack as a single flow.',
+      splitOptions: {
+        auto: 'Smart chapter detection (Chinese & English)',
+        none: 'No splitting (pack as single chapter)',
+        custom: 'Custom regular expression',
+      },
+      customRegexLabel: 'Custom chapter regex',
+      customRegexPlaceholder: '^\\s*第[零一二三四五六七八九十百千万0-9]+[章节回].*$',
+      customRegexHint: 'Matched against each trimmed line (up to 70 characters).',
+      prologueTitle: 'Prologue',
+      fallbackTitle: 'Full Text',
+      buildBtn: 'Build .epub',
+      building: 'Building EPUB…',
+      complete: 'EPUB ready to download.',
+      previewTitle: 'Detected chapters preview',
+      resultsTitle: 'Generated file',
+      download: 'Download .epub',
+      detectedInfo: 'Encoding: {encoding} · {chars} {charsUnit} · {chapters} {chaptersUnit}',
+      chaptersUnit: 'chapters',
+      charsUnit: 'characters',
+      usageTitle: 'How to use on OnePage',
+      usageSteps: [
+        'Choose your .txt book; the tool automatically detects UTF-8 or GBK / GB18030 encoding.',
+        'Check the detected chapter list or switch to single-chapter mode if the text has no headings.',
+        'Download the generated .epub and transfer it to your OnePage SD card via USB or the built-in Wi-Fi web page.',
+      ],
+      errNoFile: 'Choose a .txt file first.',
+      errFileType: 'Please select a .txt plain text file.',
+      errEmptyRegex: 'Enter a custom regular expression or switch to smart detection.',
+      errInvalidRegex: 'Invalid regular expression syntax.',
+      errFailed: 'Could not build the EPUB file.',
+    },
     firmware: {
       eyebrow: 'Firmware',
       title: 'Flash OnePage onto your device.',
@@ -414,7 +697,9 @@ export const ui: Record<Lang, Content> = {
       features: '在做什么',
       notes: '手记',
       firmware: '固件',
+      tools: '工具',
       fontTool: '字体工具',
+      txtToEpub: 'TXT 转 EPUB',
       github: 'GitHub',
     },
     hero: {
@@ -533,6 +818,8 @@ export const ui: Record<Lang, Content> = {
       tagline: '壹頁 · OnePage —— 一台 4.26″ 墨水屏阅读器。',
       openSource: '基于开源的 CrossPoint（MIT）。我的移植和这些笔记都公开分享。',
       rights: '一份个人开发记录。名字和品牌还在慢慢定。',
+      pvLabel: '总访问量',
+      uvLabel: '访客数',
     },
     specs: {
       eyebrow: '参数',
@@ -582,6 +869,125 @@ export const ui: Record<Lang, Content> = {
         { src: '/gallery/OnePage-3D-a4.jpg', alt: '壹頁 —— 唤醒键', title: '唤醒键特写', sub: '克制，但顺手' },
         { src: '/gallery/OnePage-3D-a5.jpg', alt: '壹頁 —— microSD 卡槽', title: '意外惊喜', sub: 'micro SD 那块，长了一张脸' },
       ],
+    },
+    showcase: {
+      design: {
+        eyebrow: 'ID 设计',
+        title: '薄、居中、对称、简洁。',
+        lede: 'OnePage 的正面尽量不强调「硬件感」。屏幕、按键和接口尽可能围绕中轴组织，让整机在第一眼更像一块完整的阅读载体，而不是一块装进外壳里的开发板。',
+        pillars: [
+          { num: '01', title: '薄', body: '压缩结构堆叠，侧面尽量收敛。' },
+          { num: '02', title: '居中', body: '接口和操作区域服从中轴关系。' },
+          { num: '03', title: '对称', body: '下巴三段按键形成完整秩序。' },
+          { num: '04', title: '简洁', body: '能隐藏的功能，不主动出现在正面。' },
+        ],
+        dxfCaptions: {
+          front: 'FRONT · DXF CONVERSION',
+          right: 'RIGHT EDGE',
+          usb: 'USB EDGE',
+        },
+        videoLabel: '在 Bilibili 观看演示视频 · MoveCall ↗',
+      },
+      interfaces: {
+        eyebrow: '接口与交互说明',
+        title: '按键与接口，各就各位。',
+        lede: '侧边翻页 + 三段式正面底部导航，不依赖触摸屏也能顺畅完成全部核心操作。',
+        diagramAlt: 'OnePage 接口与交互说明图',
+        callouts: [
+          { num: '01', title: 'Wake / AI', desc: '短按唤醒 · 长按 AI' },
+          { num: '02', title: 'Page Up', desc: '上一页' },
+          { num: '03', title: 'Page Down', desc: '下一页' },
+          { num: '04', title: 'USB-C', desc: '充电 / 调试 / 固件维护' },
+          { num: '05', title: 'Micro SD', desc: '系统启动必需（FAT32）；无卡时无法开机并提示 Micro SD 卡错误' },
+          { num: '06', title: 'Lanyard Hole', desc: '挂绳孔 / 便携携带' },
+        ],
+        navBarEyebrow: 'FRONT NAVIGATION BAR',
+        navBarTitle: '三段式底部导航条',
+        navBarBody: '左侧返回、中间左右导航、右侧确认。整机采用前后面板贴合方案，保持正背面一体平整。',
+        navBarKeys: [
+          { key: 'Back', label: '返回' },
+          { key: 'Left / Right', label: '左右导航' },
+          { key: 'OK', label: '确认' },
+        ],
+      },
+      engineering: {
+        eyebrow: '工程与结构设计',
+        title: '在 5 mm 厚度里安静共存。',
+        lede: '真正困难的不是把功能塞进去，而是让这些东西在一台轻薄阅读器里安静地共存。',
+        points: [
+          { title: '共享总线', body: '电子纸与 Micro SD 共用 SPI，在有限 IO 下保留完整扩展能力。' },
+          { title: '低功耗外设', body: 'SD 与麦克风按需上电，休眠时尽量切断非必要负载。' },
+          { title: '实体按键复用', body: '正面四方向操作通过 ADC 电阻梯实现，减少 GPIO 占用。' },
+          { title: '可靠升级', body: 'USB 调试与硬件恢复入口保证 DIY 阶段的可维护性。' },
+        ],
+        archLabel: 'SYSTEM ARCHITECTURE',
+        archAlt: 'OnePage 系统架构图',
+        structureTitle: 'PCB 与结构工艺',
+        pcb: {
+          title: '01 · 主板',
+          lines: [
+            '板子层数：4 层板',
+            '成品板厚：0.80 ± 0.10 mm',
+            '层叠结构：JLC04081H-3313（通用免费）',
+          ],
+        },
+        stack: {
+          title: '02 · 结构堆叠',
+          lines: [
+            '正面：PET 高透明面板（0.4 mm）',
+            '中框：CNC 铝合金（本色阳极氧化）',
+            '背面：透明亚克力背板（0.5 mm）',
+          ],
+        },
+        assembly: {
+          title: '03 · 装配',
+          lines: [
+            '屏幕 / 主板 / 电池分层堆叠',
+            '实体按键独立定位',
+            '整体性更强（面板粘接固定，调试建议在粘接前完成）',
+          ],
+        },
+        notes: {
+          bootTitle: '手动进入 Boot 模式',
+          bootBody: '按住「下一页」键不放，用针短按一次 Reset，随后先松开 Reset，再松开「下一页」键，即可进入 Boot 模式。',
+          sdTitle: 'Micro SD 启动说明',
+          sdBody: 'OnePage 只能使用 FAT32 格式的 Micro SD 卡启动系统。若未插入 Micro SD 卡，设备不能开机，并会显示「Micro SD 卡错误」。',
+          screenTitle: '电子纸屏幕注意机械压力',
+          screenBody: '电子墨水屏玻璃基板较脆，装配、运输与拆机时请避免局部受压、弯折或硬物顶压屏幕。',
+        },
+      },
+      ai: {
+        eyebrow: '彩蛋功能 · AI Experimental',
+        badge: 'EXPERIMENTAL FIRMWARE BRANCH',
+        title: '阅读器之外，偷偷试了一点 AI。',
+        body: 'AI 功能目前仍处于测试阶段，使用单独的固件分支进行实验，不影响主阅读固件的稳定性。现阶段已经接入 OpenClaw、Hermes 与 DeepSeek Harness 等 AI 智能体 / Agent 方案，用来探索电子墨水设备上的轻量 AI 交互。',
+        cards: [
+          {
+            title: '对话与问答',
+            body: '通过设备与 AI 智能体进行自然语言对话、知识问答与简单任务交互。',
+            img: 'https://image.lceda.cn/oshwhub/pullImage/04c3698e83c74e4fa464179ae96be236.png',
+            alt: 'OnePage AI 对话与问答示意',
+          },
+          {
+            title: '对话生图',
+            body: '从自然语言请求生成图像，再以适合电子纸的方式展示结果。',
+            img: 'https://image.lceda.cn/oshwhub/pullImage/b83107f997b04a8aaf67f8b8b40b4ec6.png',
+            alt: 'OnePage AI 对话生图示意',
+          },
+          {
+            title: 'Agent 执行',
+            body: '测试由智能体执行现实任务，例如点咖啡等具备动作链的 Agent 场景。',
+            img: 'https://image.lceda.cn/oshwhub/pullImage/64e13bf84b0d4b5baca2833de1924c06.jpg',
+            alt: 'OnePage AI Agent 执行示意',
+          },
+        ],
+        tags: ['OpenClaw', 'Hermes', 'DeepSeek Harness', 'Experimental'],
+      },
+      photos: {
+        eyebrow: '视觉展示',
+        title: '真机实拍。',
+        lede: '桌面上与握在手里的真实模样。',
+      },
     },
     fonts: {
       eyebrow: '字体工具',
@@ -649,6 +1055,57 @@ export const ui: Record<Lang, Content> = {
       errTooLarge: '所选源字体总大小超过 128 MB 限制。',
       errOom: '浏览器内存不足，请减少字符集、字号或字形样式后重试。',
       errFailed: '无法生成字体。',
+    },
+    txtToEpub: {
+      eyebrow: 'TXT 转 EPUB',
+      title: '把 TXT 打包成干净的 EPUB。',
+      lede: '在浏览器本地把纯文本小说或文稿转成标准 EPUB 电子书，支持自动编码识别（UTF-8 / GBK / GB18030 / Big5）与智能分章，全程不上传文件。',
+      fileLabel: 'TXT 文件',
+      fileHint: '选择设备上的 .txt 文件，所有转换均在浏览器本地完成。',
+      titleLabel: '书名',
+      titlePlaceholder: '默认使用 TXT 文件名',
+      authorLabel: '作者（可选）',
+      authorPlaceholder: '例如 佚名',
+      encodingLabel: '文本编码',
+      encodingHint: '自动识别可兼容 UTF-8、GBK / GB18030 与 Big5 编码。',
+      encodingOptions: {
+        auto: '自动识别（UTF-8 / GBK / GB18030 / Big5）',
+        utf8: 'UTF-8',
+        gb18030: 'GB18030 / GBK（简体中文）',
+        big5: 'Big5（繁体中文）',
+      },
+      splitLabel: '分章方式',
+      splitHint: '支持智能匹配常见中英文章节标题、自定义正则表达式，或直接不拆分打包。',
+      splitOptions: {
+        auto: '智能分章（中英文章节标题）',
+        none: '不分章（整书单章打包）',
+        custom: '自定义正则表达式',
+      },
+      customRegexLabel: '自定义章节正则',
+      customRegexPlaceholder: '^\\s*第[零一二三四五六七八九十百千万0-9]+[章节回].*$',
+      customRegexHint: '按行匹配（单行不超过 70 字时识别为标题）。',
+      prologueTitle: '前言',
+      fallbackTitle: '正文',
+      buildBtn: '生成 .epub',
+      building: '正在生成 EPUB…',
+      complete: 'EPUB 已生成，可以下载。',
+      previewTitle: '识别到的章节目录',
+      resultsTitle: '生成的文件',
+      download: '下载 .epub',
+      detectedInfo: '编码：{encoding} · 共 {chars} {charsUnit} · 识别为 {chapters} {chaptersUnit}',
+      chaptersUnit: '章',
+      charsUnit: '字',
+      usageTitle: '怎么传到 OnePage',
+      usageSteps: [
+        '选择本地 .txt 文件，工具会自动识别 UTF-8 或 GBK / GB18030 编码并提取章节。',
+        '如有需要可查看下方识别到的章节目录，或切换为「不分章」直接打包。',
+        '下载生成的 .epub 文件，通过 SD 卡读卡器或阅读器自带的局域网网页传书即可阅读。',
+      ],
+      errNoFile: '请先选择一个 .txt 文件。',
+      errFileType: '请选择 .txt 纯文本文件。',
+      errEmptyRegex: '请输入自定义正则表达式，或切换回智能分章。',
+      errInvalidRegex: '正则表达式语法有误，请检查。',
+      errFailed: '无法生成 EPUB 文件。',
     },
     firmware: {
       eyebrow: '固件',

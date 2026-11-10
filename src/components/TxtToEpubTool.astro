@@ -1,0 +1,389 @@
+---
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const e = ui[lang].txtToEpub;
+
+const fileInputClass =
+  'mt-1.5 block w-full min-w-0 text-sm text-ink/65 file:mr-3 file:rounded-md file:border-0 file:bg-ink/5 file:px-3 file:py-2 file:font-mono file:text-xs file:font-medium file:text-ink/80 hover:file:bg-ink/10 disabled:opacity-50';
+const textInputClass =
+  'mt-1.5 block w-full min-w-0 rounded-md border border-ink/20 bg-surface px-3 py-2 text-sm text-ink shadow-sm placeholder:text-ink/35 focus:border-accent-500 focus:ring-1 focus:ring-accent-500 focus:outline-none disabled:opacity-50';
+const selectInputClass =
+  'mt-1.5 block w-full min-w-0 rounded-md border border-ink/20 bg-surface px-3 py-2 text-sm text-ink shadow-sm focus:border-accent-500 focus:ring-1 focus:ring-accent-500 focus:outline-none disabled:opacity-50';
+
+const runtimeText = {
+  lang: lang === 'zh' ? 'zh-CN' : 'en',
+  prologueTitle: e.prologueTitle,
+  fallbackTitle: e.fallbackTitle,
+  building: e.building,
+  complete: e.complete,
+  download: e.download,
+  detectedInfo: e.detectedInfo,
+  chaptersUnit: e.chaptersUnit,
+  charsUnit: e.charsUnit,
+  errNoFile: e.errNoFile,
+  errFileType: e.errFileType,
+  errEmptyRegex: e.errEmptyRegex,
+  errInvalidRegex: e.errInvalidRegex,
+  errFailed: e.errFailed,
+};
+---
+
+<section class="py-12 sm:py-16">
+  <header class="mx-auto max-w-4xl px-6">
+    <p class="font-mono text-xs tracking-wider text-accent-600 uppercase">{e.eyebrow}</p>
+    <h1 class="mt-3 font-serif text-3xl font-medium text-balance text-ink sm:text-4xl">{e.title}</h1>
+    <p class="mt-4 max-w-[70ch] text-base/7 text-pretty text-ink/65">{e.lede}</p>
+  </header>
+
+  <div class="mx-auto mt-8 max-w-4xl px-6">
+    <form
+      id="txtToEpubTool"
+      class="rounded-lg border border-ink/15 bg-surface p-5 shadow-sm sm:p-7"
+      data-i18n={JSON.stringify(runtimeText)}
+    >
+      <div>
+        <label for="txtFile" class="block font-mono text-xs font-medium text-ink/70 uppercase">{e.fileLabel}</label>
+        <input id="txtFile" type="file" accept=".txt,text/plain" class={fileInputClass} />
+        <p class="mt-1.5 text-xs/5 text-ink/60">{e.fileHint}</p>
+      </div>
+
+      <div class="mt-6 grid gap-5 border-t border-ink/10 pt-6 sm:grid-cols-2">
+        <div>
+          <label for="bookTitle" class="block font-mono text-xs font-medium text-ink/70 uppercase">{e.titleLabel}</label>
+          <input id="bookTitle" type="text" autocomplete="off" placeholder={e.titlePlaceholder} class={textInputClass} />
+        </div>
+        <div>
+          <label for="bookAuthor" class="block font-mono text-xs font-medium text-ink/70 uppercase">{e.authorLabel}</label>
+          <input id="bookAuthor" type="text" autocomplete="off" placeholder={e.authorPlaceholder} class={textInputClass} />
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-5 border-t border-ink/10 pt-6 sm:grid-cols-2">
+        <div>
+          <label for="txtEncoding" class="block font-mono text-xs font-medium text-ink/70 uppercase">{e.encodingLabel}</label>
+          <select id="txtEncoding" class={selectInputClass}>
+            <option value="auto">{e.encodingOptions.auto}</option>
+            <option value="utf-8">{e.encodingOptions.utf8}</option>
+            <option value="gb18030">{e.encodingOptions.gb18030}</option>
+            <option value="big5">{e.encodingOptions.big5}</option>
+          </select>
+          <p class="mt-1.5 text-xs/5 text-ink/60">{e.encodingHint}</p>
+        </div>
+
+        <div>
+          <label for="splitMode" class="block font-mono text-xs font-medium text-ink/70 uppercase">{e.splitLabel}</label>
+          <select id="splitMode" class={selectInputClass}>
+            <option value="auto">{e.splitOptions.auto}</option>
+            <option value="none">{e.splitOptions.none}</option>
+            <option value="custom">{e.splitOptions.custom}</option>
+          </select>
+          <p class="mt-1.5 text-xs/5 text-ink/60">{e.splitHint}</p>
+        </div>
+      </div>
+
+      <div id="customRegexWrap" class="mt-5 hidden">
+        <label for="customRegex" class="block font-mono text-xs font-medium text-ink/70 uppercase">{e.customRegexLabel}</label>
+        <input
+          id="customRegex"
+          type="text"
+          autocomplete="off"
+          placeholder={e.customRegexPlaceholder}
+          class={`${textInputClass} font-mono`}
+        />
+        <p class="mt-1.5 text-xs/5 text-ink/60">{e.customRegexHint}</p>
+      </div>
+
+      <div class="mt-7 flex flex-wrap items-center gap-3 border-t border-ink/10 pt-6">
+        <button
+          id="buildEpubBtn"
+          type="submit"
+          class="rounded-md bg-ink px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-paper shadow-sm hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-45"
+        >
+          {e.buildBtn}
+        </button>
+        <p id="epubStatusText" class="font-mono text-xs/5 text-ink/60" aria-live="polite"></p>
+      </div>
+
+      <details id="chapterPreviewDetails" class="mt-4 hidden border-t border-ink/10 pt-3">
+        <summary class="cursor-pointer select-none font-mono text-[11px] text-ink/55 hover:text-ink/80">
+          {e.previewTitle} <span id="chapterPreviewSummary" class="text-ink/45"></span>
+        </summary>
+        <ol
+          id="chapterPreviewList"
+          class="mt-2 max-h-52 list-decimal space-y-1 overflow-auto border-l border-ink/10 pl-6 font-mono text-xs/5 text-ink/65"
+        ></ol>
+      </details>
+
+      <section id="epubResultsPanel" class="mt-6 hidden border-t border-ink/10 pt-5" aria-live="polite">
+        <h2 class="font-mono text-xs font-semibold text-ink/70 uppercase">{e.resultsTitle}</h2>
+        <div class="mt-3 flex flex-wrap items-center justify-between gap-3 border-y border-ink/10 py-3">
+          <div class="min-w-0">
+            <div id="resultFilename" class="break-all text-sm font-medium text-ink"></div>
+            <div id="resultMeta" class="mt-0.5 font-mono text-xs text-ink/55"></div>
+          </div>
+          <a
+            id="downloadEpubLink"
+            href="#"
+            download=""
+            class="shrink-0 rounded-md px-3 py-2 font-mono text-xs font-medium text-accent-600 hover:bg-accent-500/10"
+          >
+            {e.download}
+          </a>
+        </div>
+      </section>
+    </form>
+
+    <section class="mt-9 border-t border-ink/15 pt-7">
+      <h2 class="font-serif text-lg font-medium text-ink">{e.usageTitle}</h2>
+      <ol class="mt-4 list-decimal space-y-2 pl-5 text-sm/6 text-ink/70">
+        {e.usageSteps.map((step) => <li>{step}</li>)}
+      </ol>
+    </section>
+  </div>
+</section>
+
+<script>
+  import {
+    buildEpubBytes,
+    decodeTxtBuffer,
+    sanitizeEpubFilename,
+    splitChapters,
+    type Chapter,
+    type EncodingOption,
+    type SplitMode,
+  } from '../epub/txtToEpub';
+
+  const form = document.getElementById('txtToEpubTool') as HTMLFormElement | null;
+  if (form) {
+    const text = JSON.parse(form.dataset.i18n || '{}') as Record<string, string>;
+    const byId = <T extends HTMLElement>(id: string): T => {
+      const element = document.getElementById(id);
+      if (!element) throw new Error(`Missing TXT to EPUB element: ${id}`);
+      return element as T;
+    };
+
+    const fileInput = byId<HTMLInputElement>('txtFile');
+    const titleInput = byId<HTMLInputElement>('bookTitle');
+    const authorInput = byId<HTMLInputElement>('bookAuthor');
+    const encodingSelect = byId<HTMLSelectElement>('txtEncoding');
+    const splitSelect = byId<HTMLSelectElement>('splitMode');
+    const customRegexWrap = byId<HTMLElement>('customRegexWrap');
+    const customRegexInput = byId<HTMLInputElement>('customRegex');
+    const buildButton = byId<HTMLButtonElement>('buildEpubBtn');
+    const statusText = byId<HTMLElement>('epubStatusText');
+    const previewDetails = byId<HTMLDetailsElement>('chapterPreviewDetails');
+    const previewSummary = byId<HTMLElement>('chapterPreviewSummary');
+    const previewList = byId<HTMLOListElement>('chapterPreviewList');
+    const resultsPanel = byId<HTMLElement>('epubResultsPanel');
+    const resultFilename = byId<HTMLElement>('resultFilename');
+    const resultMeta = byId<HTMLElement>('resultMeta');
+    const downloadLink = byId<HTMLAnchorElement>('downloadEpubLink');
+
+    let cachedBuffer: ArrayBuffer | null = null;
+    let cachedFileName = '';
+    let activeBlobUrl: string | null = null;
+    let building = false;
+
+    function formatBytes(bytes: number): string {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+    }
+
+    function setStatus(message: string, isError = false): void {
+      statusText.textContent = message;
+      statusText.classList.toggle('text-red-700', isError);
+      statusText.classList.toggle('text-ink/60', !isError);
+    }
+
+    function clearResult(): void {
+      if (activeBlobUrl) {
+        URL.revokeObjectURL(activeBlobUrl);
+        activeBlobUrl = null;
+      }
+      resultsPanel.classList.add('hidden');
+    }
+
+    function formatSummary(encoding: string, chars: number, chaptersCount: number): string {
+      return text.detectedInfo
+        .replace('{encoding}', encoding)
+        .replace('{chars}', chars.toLocaleString())
+        .replace('{charsUnit}', text.charsUnit)
+        .replace('{chapters}', String(chaptersCount))
+        .replace('{chaptersUnit}', text.chaptersUnit);
+    }
+
+    function parseCurrentBuffer(): { encoding: string; chapters: Chapter[]; chars: number } | null {
+      if (!cachedBuffer) return null;
+      const encodingOpt = encodingSelect.value as EncodingOption;
+      const splitMode = splitSelect.value as SplitMode;
+
+      if (splitMode === 'custom' && !customRegexInput.value.trim()) {
+        setStatus(text.errEmptyRegex, true);
+        return null;
+      }
+
+      const decoded = decodeTxtBuffer(cachedBuffer, encodingOpt);
+      let chapters: Chapter[];
+      try {
+        chapters = splitChapters(decoded.text, {
+          mode: splitMode,
+          customPattern: customRegexInput.value,
+          prologueTitle: text.prologueTitle,
+          fallbackTitle: titleInput.value.trim() || cachedFileName || text.fallbackTitle,
+        });
+      } catch {
+        setStatus(text.errInvalidRegex, true);
+        return null;
+      }
+
+      const chars = decoded.text.replace(/\s+/g, '').length;
+      return { encoding: decoded.encoding, chapters, chars };
+    }
+
+    function refreshPreview(): void {
+      if (!cachedBuffer) {
+        previewDetails.classList.add('hidden');
+        return;
+      }
+      const parsed = parseCurrentBuffer();
+      if (!parsed) {
+        previewDetails.classList.add('hidden');
+        return;
+      }
+
+      const summary = formatSummary(parsed.encoding, parsed.chars, parsed.chapters.length);
+      setStatus(summary, false);
+      previewSummary.textContent = `(${parsed.chapters.length})`;
+      previewList.replaceChildren();
+
+      const maxPreview = 200;
+      const slice = parsed.chapters.slice(0, maxPreview);
+      for (const ch of slice) {
+        const li = document.createElement('li');
+        li.textContent = ch.title;
+        previewList.append(li);
+      }
+      if (parsed.chapters.length > maxPreview) {
+        const more = document.createElement('li');
+        more.className = 'list-none text-ink/45';
+        more.textContent = `… +${parsed.chapters.length - maxPreview}`;
+        previewList.append(more);
+      }
+      previewDetails.classList.remove('hidden');
+    }
+
+    async function handleFileSelect(): Promise<void> {
+      clearResult();
+      const file = fileInput.files?.[0];
+      if (!file) {
+        cachedBuffer = null;
+        cachedFileName = '';
+        previewDetails.classList.add('hidden');
+        setStatus('');
+        return;
+      }
+
+      if (!/\.txt$/i.test(file.name) && file.type && file.type !== 'text/plain') {
+        cachedBuffer = null;
+        cachedFileName = '';
+        previewDetails.classList.add('hidden');
+        setStatus(text.errFileType, true);
+        return;
+      }
+
+      cachedFileName = file.name.replace(/\.txt$/i, '').trim();
+      if (!titleInput.value.trim() && cachedFileName) {
+        titleInput.value = cachedFileName;
+      }
+
+      cachedBuffer = await file.arrayBuffer();
+      refreshPreview();
+    }
+
+    async function handleBuild(): Promise<void> {
+      if (building) return;
+      const file = fileInput.files?.[0];
+      if (!file) {
+        setStatus(text.errNoFile, true);
+        return;
+      }
+      if (!cachedBuffer) {
+        cachedBuffer = await file.arrayBuffer();
+      }
+
+      const parsed = parseCurrentBuffer();
+      if (!parsed) return;
+
+      building = true;
+      buildButton.disabled = true;
+      clearResult();
+      setStatus(text.building, false);
+
+      try {
+        const bookTitle = titleInput.value.trim() || cachedFileName || text.fallbackTitle;
+        const epubBytes = await buildEpubBytes({
+          title: bookTitle,
+          author: authorInput.value.trim(),
+          language: text.lang,
+          chapters: parsed.chapters,
+        });
+
+        const buffer =
+          epubBytes.byteOffset === 0 && epubBytes.byteLength === epubBytes.buffer.byteLength
+            ? (epubBytes.buffer as ArrayBuffer)
+            : (epubBytes.slice().buffer as ArrayBuffer);
+        const blob = new Blob([buffer], { type: 'application/epub+zip' });
+        activeBlobUrl = URL.createObjectURL(blob);
+
+        const outFilename = sanitizeEpubFilename(bookTitle);
+        resultFilename.textContent = outFilename;
+        resultMeta.textContent = `${formatBytes(epubBytes.byteLength)} · ${formatSummary(
+          parsed.encoding,
+          parsed.chars,
+          parsed.chapters.length,
+        )}`;
+        downloadLink.href = activeBlobUrl;
+        downloadLink.download = outFilename;
+        downloadLink.setAttribute('aria-label', `${text.download}: ${outFilename}`);
+
+        resultsPanel.classList.remove('hidden');
+        setStatus(text.complete, false);
+      } catch {
+        setStatus(text.errFailed, true);
+      } finally {
+        building = false;
+        buildButton.disabled = false;
+      }
+    }
+
+    fileInput.addEventListener('change', () => void handleFileSelect());
+    encodingSelect.addEventListener('change', () => {
+      clearResult();
+      refreshPreview();
+    });
+    splitSelect.addEventListener('change', () => {
+      customRegexWrap.classList.toggle('hidden', splitSelect.value !== 'custom');
+      clearResult();
+      refreshPreview();
+    });
+    customRegexInput.addEventListener('input', () => {
+      clearResult();
+      refreshPreview();
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      void handleBuild();
+    });
+
+    window.addEventListener('pagehide', clearResult, { once: true });
+    window.addEventListener('unload', clearResult, { once: true });
+  }
+</script>

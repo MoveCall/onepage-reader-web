@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import TxtToEpubTool from '../../components/TxtToEpubTool.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'zh';
+---
+
+<Layout
+  lang={lang}
+  title="TXT 转 EPUB 工具 — 壹頁 · OnePage"
+  description="在浏览器本地把 TXT 文本转换成标准 EPUB 电子书，支持 UTF-8 / GBK 自动编码识别与智能分章，全程不上传。"
+>
+  <Nav lang={lang} />
+  <main>
+    <TxtToEpubTool lang={lang} />
+  </main>
+  <Footer lang={lang} showAbout={false} />
+</Layout>

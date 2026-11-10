@@ -26,6 +26,9 @@ if (logical.startsWith(base)) logical = '/' + logical.slice(base.length);
 logical = logical.replace(/^\/zh(?=\/|$)/, '') || '/';
 const enUrl = new URL(localizedPath(logical, 'en'), siteOrigin).href;
 const zhUrl = new URL(localizedPath(logical, 'zh'), siteOrigin).href;
+// Google Analytics 4 Measurement ID & Google Tag ID
+const gaId = import.meta.env.PUBLIC_GA_ID || 'G-N61YZMT59L';
+const gtmId = import.meta.env.PUBLIC_GTM_ID || 'GTM-MLJ5DJJH';
 ---
 
 <!doctype html>
@@ -76,6 +79,18 @@ const zhUrl = new URL(localizedPath(logical, 'zh'), siteOrigin).href;
       href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    {gaId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        {gtmId && <script async src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}></script>}
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
   </head>
   <body class="min-h-dvh bg-paper font-serif text-ink">
     <slot />
